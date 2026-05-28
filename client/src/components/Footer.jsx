@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   FiFacebook, 
@@ -10,10 +10,31 @@ import {
   FiSend
 } from 'react-icons/fi';
 import { motion } from 'framer-motion';
+import { useSelector } from 'react-redux';
 import Logo from './Logo';
+import api from '../utils/api';
+import toast from 'react-hot-toast';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const { data: siteSettings } = useSelector(state => state.settings);
+  const [email, setEmail] = useState('');
+  const [isSubscribing, setIsSubscribing] = useState(false);
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!email) return;
+    try {
+      setIsSubscribing(true);
+      await api.post('/subscribers', { email });
+      toast.success('Joined the Elite Circle successfully!');
+      setEmail('');
+      setIsSubscribing(false);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Subscription failed');
+      setIsSubscribing(false);
+    }
+  };
 
   return (
     <footer className="bg-[#071120] text-white pt-24 pb-12 overflow-hidden relative">
@@ -29,13 +50,20 @@ const Footer = () => {
               <Logo isTransparent={true} iconSize="w-12 h-12" />
             </Link>
             <p className="text-white/30 text-lg font-medium leading-relaxed max-w-sm italic">
-              Crafting a legacy of modern luxury and architectural excellence.
+              {siteSettings?.footer?.about || "Crafting a legacy of modern luxury and architectural excellence."}
             </p>
             <div className="flex space-x-5">
-              {[FiInstagram, FiTwitter, FiFacebook, FiYoutube].map((Icon, i) => (
+              {[
+                { Icon: FiInstagram, link: siteSettings?.footer?.instagram || "#" },
+                { Icon: FiTwitter, link: siteSettings?.footer?.twitter || "#" },
+                { Icon: FiFacebook, link: siteSettings?.footer?.facebook || "#" },
+                { Icon: FiYoutube, link: siteSettings?.footer?.youtube || "#" }
+              ].map(({ Icon, link }, i) => (
                 <motion.a 
                   key={i} 
-                  href="#" 
+                  href={link} 
+                  target="_blank"
+                  rel="noopener noreferrer"
                   whileHover={{ y: -3, scale: 1.1 }}
                   className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/30 hover:bg-primary hover:text-white hover:border-primary transition-all duration-500 group shadow-glow"
                 >
@@ -83,16 +111,23 @@ const Footer = () => {
                 Subscribe for exclusive architectural insights and elite collection premieres.
               </p>
             </div>
-            <div className="relative group">
+            <form onSubmit={handleSubscribe} className="relative group">
               <input 
                 type="email" 
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Elite email" 
                 className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-6 pr-16 focus:outline-none focus:border-primary/50 transition-all text-sm font-bold text-white placeholder:text-white/10"
               />
-              <button className="absolute right-2 top-2 bottom-2 w-12 bg-primary hover:bg-white hover:text-[#071120] text-white flex items-center justify-center rounded-xl transition-all shadow-xl group/btn">
+              <button 
+                type="submit"
+                disabled={isSubscribing}
+                className="absolute right-2 top-2 bottom-2 w-12 bg-primary hover:bg-white hover:text-[#071120] text-white flex items-center justify-center rounded-xl transition-all shadow-xl group/btn disabled:opacity-50"
+              >
                 <FiSend className="text-lg group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
               </button>
-            </div>
+            </form>
             <p className="text-[7px] font-black uppercase tracking-[3px] text-white/10 text-center lg:text-left">
               Join 15,000+ global members
             </p>

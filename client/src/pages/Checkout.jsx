@@ -1,16 +1,83 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { FiMapPin, FiCreditCard, FiTruck, FiArrowRight, FiCheck } from 'react-icons/fi';
+import { useLocation } from 'react-router-dom';
+import { FiMapPin, FiCreditCard, FiTruck, FiArrowRight, FiCheck, FiLoader } from 'react-icons/fi';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import api from '../utils/api';
 
 const Checkout = () => {
   const { cartItems } = useSelector((state) => state.cart);
+  const { userInfo } = useSelector((state) => state.auth);
+  const location = useLocation();
+  const directBuyItem = location.state?.directBuyItem;
+
+  // Use direct buy item if present, otherwise use full cart
+  const checkoutItems = directBuyItem ? [directBuyItem] : cartItems;
+  
+  const navigate = useNavigate();
+
   const [step, setStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState('Razorpay');
+  const [selectedAddress, setSelectedAddress] = useState(userInfo?.addresses?.find(a => a.isDefault) || userInfo?.addresses?.[0] || null);
 
-  const subtotal = cartItems.reduce((acc, item) => acc + item.qty * item.price, 0).toFixed(2);
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [isApplying, setIsApplying] = useState(false);
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+
+  const subtotal = checkoutItems.reduce((acc, item) => acc + item.qty * item.price, 0).toFixed(2);
   const shipping = subtotal > 50 ? 0 : 10;
-  const total = (Number(subtotal) + shipping).toFixed(2);
+  
+  const discountAmount = appliedCoupon ? (Number(subtotal) * appliedCoupon.discountPercentage) / 100 : 0;
+  const total = (Number(subtotal) + shipping - discountAmount).toFixed(2);
+
+  const applyCouponHandler = async () => {
+    if (!couponCode) return;
+    try {
+      setIsApplying(true);
+      const { data } = await api.post('/coupons/validate', { code: couponCode, cartTotal: Number(subtotal) });
+      setAppliedCoupon(data);
+      toast.success('Coupon applied successfully!');
+      setIsApplying(false);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Invalid coupon');
+      setAppliedCoupon(null);
+      setIsApplying(false);
+    }
+  };
+
+  const placeOrderHandler = async () => {
+    try {
+      setIsPlacingOrder(true);
+      const orderData = {
+        orderItems: checkoutItems,
+        shippingAddress: {
+          fullName: selectedAddress.fullName,
+          street: selectedAddress.street,
+          city: selectedAddress.city,
+          postalCode: selectedAddress.postalCode,
+          country: selectedAddress.country,
+          phone: selectedAddress.phone
+        },
+        paymentMethod,
+        itemsPrice: Number(subtotal),
+        taxPrice: 0,
+        shippingPrice: shipping,
+        totalPrice: Number(total),
+        discountPrice: discountAmount,
+        couponCode: appliedCoupon?.code || '',
+      };
+
+      const { data } = await api.post('/orders', orderData);
+      toast.success('Order placed successfully!');
+      navigate(`/order/${data._id}`);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to place order');
+      setIsPlacingOrder(false);
+    }
+  };
 
   const steps = [
     { id: 1, name: 'Shipping', icon: <FiMapPin /> },
@@ -48,32 +115,48 @@ const Checkout = () => {
               className="bg-white p-8 rounded-[32px] shadow-sm border border-gray-50"
             >
               <h2 className="text-2xl font-black mb-8">Shipping Information</h2>
-              <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="md:col-span-2 space-y-2">
-                  <label className="text-sm font-bold text-gray-700 ml-1">Full Name</label>
-                  <input type="text" placeholder="John Doe" className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-6 focus:outline-none focus:border-primary transition-all" />
-                </div>
-                <div className="md:col-span-2 space-y-2">
-                  <label className="text-sm font-bold text-gray-700 ml-1">Address</label>
-                  <input type="text" placeholder="123 Street Name" className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-6 focus:outline-none focus:border-primary transition-all" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700 ml-1">City</label>
-                  <input type="text" placeholder="City" className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-6 focus:outline-none focus:border-primary transition-all" />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold text-gray-700 ml-1">Postal Code</label>
-                  <input type="text" placeholder="123456" className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-6 focus:outline-none focus:border-primary transition-all" />
-                </div>
+              
+              <div className="space-y-4 mb-8">
+                {!userInfo?.addresses?.length ? (
+                  <div className="text-center py-10 bg-gray-50 rounded-3xl">
+                    <p className="text-gray-500 mb-4 font-medium">You don't have any saved addresses.</p>
+                    <a href="/profile#addresses" className="btn-primary py-3 px-8 text-sm inline-block">Add Address in Profile</a>
+                  </div>
+                ) : (
+                  userInfo.addresses.map((addr, idx) => (
+                    <label key={idx} className={`flex items-start p-6 rounded-3xl border-2 cursor-pointer transition-all ${selectedAddress === addr ? 'border-primary bg-primary/5' : 'border-gray-100 bg-white hover:border-gray-200'}`}>
+                      <input 
+                        type="radio" 
+                        name="address" 
+                        className="mt-1 w-5 h-5 text-primary focus:ring-primary mr-4"
+                        checked={selectedAddress === addr}
+                        onChange={() => setSelectedAddress(addr)}
+                      />
+                      <div>
+                        <div className="flex items-center space-x-3 mb-1">
+                          <h4 className="font-black text-lg text-accent">{addr.fullName}</h4>
+                          {addr.isDefault && <span className="bg-primary text-white text-[9px] font-black uppercase tracking-[2px] px-2 py-0.5 rounded-full">Default</span>}
+                        </div>
+                        <p className="text-gray-500 font-medium text-sm">{addr.street}, {addr.city}, {addr.state}, {addr.postalCode}, {addr.country}</p>
+                        <p className="text-gray-400 font-bold text-xs mt-1">Phone: {addr.phone}</p>
+                      </div>
+                    </label>
+                  ))
+                )}
+              </div>
+
+              <div className="flex justify-between items-center">
+                <a href="/profile#addresses" className="text-sm font-bold text-gray-500 hover:text-primary transition-colors">Manage Addresses</a>
                 <button 
                   type="button"
+                  disabled={!selectedAddress}
                   onClick={() => setStep(2)}
-                  className="md:col-span-2 btn-primary h-14 mt-4 flex items-center justify-center space-x-2"
+                  className={`btn-primary h-14 px-8 flex items-center justify-center space-x-2 ${!selectedAddress && 'opacity-50 cursor-not-allowed'}`}
                 >
                   <span>Continue to Payment</span>
                   <FiArrowRight />
                 </button>
-              </form>
+              </div>
             </motion.div>
           )}
 
@@ -126,15 +209,19 @@ const Checkout = () => {
               <h2 className="text-2xl font-black mb-8">Confirm Your Order</h2>
               <div className="p-6 bg-gray-50 rounded-2xl mb-8">
                 <h4 className="font-bold mb-4 uppercase text-xs tracking-widest text-gray-400">Shipping To:</h4>
-                <p className="font-bold">John Doe</p>
-                <p className="text-gray-500">123 Street Name, City, 123456</p>
+                <p className="font-bold">{selectedAddress?.fullName}</p>
+                <p className="text-gray-500">{selectedAddress?.street}, {selectedAddress?.city}, {selectedAddress?.postalCode}</p>
               </div>
               <div className="p-6 bg-gray-50 rounded-2xl mb-10">
                 <h4 className="font-bold mb-4 uppercase text-xs tracking-widest text-gray-400">Payment Method:</h4>
                 <p className="font-bold">{paymentMethod}</p>
               </div>
-              <button className="w-full btn-primary h-16 text-lg font-black uppercase tracking-widest">
-                Place Order - ${total}
+              <button 
+                onClick={placeOrderHandler}
+                disabled={isPlacingOrder}
+                className="w-full btn-primary h-16 text-lg font-black uppercase tracking-widest flex items-center justify-center space-x-2"
+              >
+                {isPlacingOrder ? <FiLoader className="animate-spin text-2xl" /> : <span>Place Order - ${total}</span>}
               </button>
             </motion.div>
           )}
@@ -145,7 +232,7 @@ const Checkout = () => {
           <div className="bg-white p-8 rounded-[32px] shadow-premium border border-gray-50 sticky top-28">
             <h3 className="text-xl font-black mb-6">In Your Bag</h3>
             <div className="space-y-4 mb-8 max-h-[300px] overflow-y-auto pr-2">
-              {cartItems.map((item) => (
+              {checkoutItems.map((item) => (
                 <div key={item.product} className="flex items-center space-x-4">
                   <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0">
                     <img src={item.image} alt="" className="w-full h-full object-cover" />
@@ -159,6 +246,41 @@ const Checkout = () => {
               ))}
             </div>
             
+            {/* Promo Code */}
+            <div className="mb-6 pt-6 border-t border-gray-100">
+              <div className="flex space-x-2">
+                <input 
+                  type="text" 
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                  placeholder="Promo Code" 
+                  className="input-premium flex-grow h-12 text-sm"
+                  disabled={!!appliedCoupon}
+                />
+                {!appliedCoupon ? (
+                  <button 
+                    onClick={applyCouponHandler} 
+                    disabled={isApplying || !couponCode}
+                    className="btn-primary px-6 text-xs h-12 flex items-center justify-center min-w-[80px]"
+                  >
+                    {isApplying ? <FiLoader className="animate-spin" /> : 'Apply'}
+                  </button>
+                ) : (
+                  <button 
+                    onClick={() => { setAppliedCoupon(null); setCouponCode(''); }} 
+                    className="btn-secondary px-6 text-xs h-12 text-red-500 hover:text-white hover:bg-red-500"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+              {appliedCoupon && (
+                <p className="text-green-500 text-xs font-bold mt-2">
+                  {appliedCoupon.code} applied! ({appliedCoupon.discountPercentage}% off)
+                </p>
+              )}
+            </div>
+
             <div className="space-y-3 pt-6 border-t border-gray-100">
               <div className="flex justify-between text-sm text-gray-500">
                 <span>Subtotal</span>
@@ -168,6 +290,12 @@ const Checkout = () => {
                 <span>Shipping</span>
                 <span className="font-bold text-accent">${shipping.toFixed(2)}</span>
               </div>
+              {appliedCoupon && (
+                <div className="flex justify-between text-sm text-green-500 font-bold">
+                  <span>Discount ({appliedCoupon.discountPercentage}%)</span>
+                  <span>-${discountAmount.toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between text-lg font-black pt-4 border-t border-gray-50">
                 <span>Total</span>
                 <span className="text-primary">${total}</span>

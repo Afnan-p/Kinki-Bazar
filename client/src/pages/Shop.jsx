@@ -40,6 +40,7 @@ const Shop = () => {
   const [selectedRating, setSelectedRating] = useState('');
   const [sortOrder, setSortOrder] = useState('latest');
   const [searchTerm, setSearchTerm] = useState(keywordFromUrl);
+  const [pageNumber, setPageNumber] = useState(1);
   const [isFilterBarSticky, setIsFilterBarSticky] = useState(false);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -56,13 +57,13 @@ const Shop = () => {
   // Data Fetching
   useEffect(() => {
     dispatch(listProducts({ 
-      pageNumber: 1, 
-      pageSize: 40,
+      pageNumber, 
+      pageSize: 12,
       keyword: searchTerm,
       category: selectedCategory,
       price: priceRange
     }));
-  }, [dispatch, searchTerm, selectedCategory, priceRange]);
+  }, [dispatch, searchTerm, selectedCategory, priceRange, pageNumber]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -110,6 +111,7 @@ const Shop = () => {
     const catValue = cat?.name || cat;
     const newCat = selectedCategory === catValue ? '' : catValue;
     setSelectedCategory(newCat);
+    setPageNumber(1);
     navigate(`/shop${newCat ? `?category=${encodeURIComponent(newCat)}` : ''}`);
   };
 
@@ -119,7 +121,13 @@ const Shop = () => {
     setSelectedRating('');
     setPriceRange(100000000);
     setSortOrder('latest');
+    setPageNumber(1);
     navigate('/shop');
+  };
+
+  const handlePageChange = (pageIdx) => {
+    setPageNumber(pageIdx);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (

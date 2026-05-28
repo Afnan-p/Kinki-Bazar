@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
@@ -35,6 +35,23 @@ const Navbar = () => {
   
   const { userInfo, wishlist } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.cart);
+
+  const searchRef = useRef(null);
+  const profileRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setIsSearchOpen(false);
+      }
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setIsProfileOpen(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -76,6 +93,7 @@ const Navbar = () => {
     { name: 'Collections', path: '/shop' },
     { name: 'Categories', path: '/categories' },
     { name: 'Our Story', path: '/about' },
+    { name: 'Contact', path: '/contact' },
   ];
 
   const isHomePage = location.pathname === '/';
@@ -146,14 +164,41 @@ const Navbar = () => {
 
           {/* Right Side Icons */}
           <div className="flex items-center space-x-1 md:space-x-2">
-            <button 
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className={`p-2 rounded-lg transition-all duration-500 group ${
-                shouldBeTransparent ? 'text-white hover:bg-white/5' : 'text-[#071120] hover:bg-gray-100'
-              }`}
-            >
-              <FiSearch className="text-lg group-hover:scale-110 transition-transform" />
-            </button>
+            {/* Compact Search */}
+            <div className="relative" ref={searchRef}>
+              <button 
+                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                className={`p-2 rounded-lg transition-all duration-500 group ${
+                  shouldBeTransparent ? 'text-white hover:bg-white/5' : 'text-[#071120] hover:bg-gray-100'
+                }`}
+              >
+                <FiSearch className="text-lg group-hover:scale-110 transition-transform" />
+              </button>
+
+              <AnimatePresence>
+                {isSearchOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute right-0 mt-3 w-[300px] bg-white rounded-[20px] shadow-[0_25px_70px_-20px_rgba(0,0,0,0.15)] p-2 border border-gray-50 flex items-center z-50 overflow-hidden"
+                  >
+                    <FiSearch className="text-primary ml-3 text-lg" />
+                    <input 
+                      type="text" 
+                      value={searchTerm}
+                      onChange={handleSearchChange}
+                      placeholder="Search collection..." 
+                      className="w-full bg-transparent py-2.5 px-3 focus:outline-none text-sm font-bold text-[#071120] placeholder:text-gray-300"
+                      autoFocus
+                    />
+                    <button onClick={() => setIsSearchOpen(false)} className="p-1.5 hover:bg-red-50 rounded-lg text-gray-400 hover:text-red-500 transition-colors mr-1">
+                      <FiX />
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
             
             <Link 
               to="/wishlist" 
@@ -182,7 +227,7 @@ const Navbar = () => {
             </Link>
 
             {/* Profile Dropdown */}
-            <div className="relative ml-0.5">
+            <div className="relative ml-0.5" ref={profileRef}>
               <button 
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                 className={`flex items-center p-0.5 rounded-full transition-all duration-500 border ${
@@ -217,7 +262,7 @@ const Navbar = () => {
                           <FiUser />
                           <span>Settings</span>
                         </Link>
-                        <Link to="/orders" className="flex items-center space-x-2.5 px-3.5 py-2 hover:bg-gray-50 rounded-lg transition-all font-black text-[8px] uppercase tracking-widest text-gray-500 hover:text-primary">
+                        <Link to="/profile#orders" className="flex items-center space-x-2.5 px-3.5 py-2 hover:bg-gray-50 rounded-lg transition-all font-black text-[8px] uppercase tracking-widest text-gray-500 hover:text-primary">
                           <FiPackage />
                           <span>Orders</span>
                         </Link>
@@ -250,34 +295,6 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Cinematic Animated Search Overlay */}
-        <AnimatePresence>
-          {isSearchOpen && (
-            <motion.div 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="bg-white/95 backdrop-blur-3xl border-t border-gray-100 overflow-hidden shadow-xl"
-            >
-              <div className="max-w-[1400px] mx-auto px-[clamp(1rem,4vw,3rem)] py-6 flex items-center">
-                <div className="relative flex-grow group">
-                  <FiSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-primary text-lg transition-transform group-hover:scale-110" />
-                  <input 
-                    type="text" 
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                    placeholder="Discover curated pieces..." 
-                    className="w-full bg-gray-50/50 rounded-xl py-4 pl-14 pr-6 focus:outline-none focus:ring-1 focus:ring-primary/20 text-base font-black tracking-tight placeholder:text-gray-300"
-                    autoFocus
-                  />
-                </div>
-                <button onClick={() => setIsSearchOpen(false)} className="ml-4 w-14 h-14 bg-[#071120] text-white rounded-xl flex items-center justify-center hover:bg-primary transition-all shadow-lg">
-                  <FiX className="text-xl" />
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </nav>
 
       {/* LUXURY FULLSCREEN MOBILE MENU */}

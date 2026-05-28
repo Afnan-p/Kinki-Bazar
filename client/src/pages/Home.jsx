@@ -34,11 +34,31 @@ import {
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { listProducts } from '../redux/slices/productSlice';
+import { getSiteSettings } from '../redux/slices/settingsSlice';
 import ProductCard from '../components/ProductCard';
 import api from '../utils/api';
+import toast from 'react-hot-toast';
 
 const Home = () => {
   const dispatch = useDispatch();
+  const [email, setEmail] = useState('');
+  const [isSubscribing, setIsSubscribing] = useState(false);
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!email) return;
+    try {
+      setIsSubscribing(true);
+      await api.post('/subscribers', { email });
+      toast.success('Successfully subscribed to the elite circle!');
+      setEmail('');
+      setIsSubscribing(false);
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to subscribe');
+      setIsSubscribing(false);
+    }
+  };
+
   const [categories, setCategories] = useState([]);
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [trendingProducts, setTrendingProducts] = useState([]);
@@ -48,12 +68,15 @@ const Home = () => {
   const [loadingSections, setLoadingSections] = useState(true);
   const [activeTab, setActiveTab] = useState('featured');
   
+  const { data: siteSettings, loading: settingsLoading } = useSelector(state => state.settings);
+  
   const { scrollYProgress } = useScroll();
   const yParallax = useTransform(scrollYProgress, [0, 1], [0, -200]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 1.1]);
 
   useEffect(() => {
+    dispatch(getSiteSettings());
     const fetchData = async () => {
       setLoadingSections(true);
       try {
@@ -123,7 +146,7 @@ const Home = () => {
               initial={{ scale: 1.2, filter: 'blur(10px)', opacity: 0 }}
               animate={{ scale: 1, filter: 'blur(0px)', opacity: 0.4 }}
               transition={{ duration: 2.5, ease: [0.16, 1, 0.3, 1] }}
-              src="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80" 
+              src={siteSettings?.hero?.image || "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80"} 
               className="w-full h-full object-cover will-change-transform"
               alt="Luxury Colorful Kitchen"
             />
@@ -162,32 +185,28 @@ const Home = () => {
                 className="inline-flex items-center space-x-3 px-6 py-2.5 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-full mb-10"
               >
                 <div className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_15px_rgba(var(--primary-rgb),0.8)]" />
-                <span className="text-primary text-[10px] font-black uppercase tracking-[4px]">Luxury Living Redefined</span>
+                <span className="text-primary text-[10px] font-black uppercase tracking-[4px]">{siteSettings?.hero?.subtitle || "Luxury Living Redefined"}</span>
               </motion.div>
               
               <motion.h1 
                 variants={fadeInUp}
                 className="text-[clamp(2.4rem,5vw,5rem)] font-black text-white leading-[0.95] tracking-tighter mb-8"
-              >
-                Crafting <br />
-                <span className="text-primary italic">Elegant</span> <br />
-                Spaces For <br />
-                Modern Living
-              </motion.h1>
+                dangerouslySetInnerHTML={{ __html: siteSettings?.hero?.title?.replace('Elegant', '<span class="text-primary italic">Elegant</span>') || `Crafting <br /> <span class="text-primary italic">Elegant</span> <br /> Spaces For <br /> Modern Living` }}
+              />
               
               <motion.p 
                 variants={fadeInUp}
                 className="text-white/50 text-[clamp(1rem,1.2vw,1.3rem)] font-medium leading-relaxed max-w-xl mx-auto lg:mx-0 mb-14"
               >
-                Discover curated home essentials blending timeless craftsmanship with modern elegance. Designed for those who appreciate the finer details.
+                {siteSettings?.hero?.description || "Discover curated home essentials blending timeless craftsmanship with modern elegance. Designed for those who appreciate the finer details."}
               </motion.p>
               
               <motion.div 
                 variants={fadeInUp}
                 className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-8"
               >
-                <Link to="/shop" className="group relative h-20 px-16 bg-primary text-white rounded-[24px] font-black text-[11px] uppercase tracking-[5px] shadow-[0_20px_50px_-15px_rgba(var(--primary-rgb),0.5)] hover:scale-[1.05] active:scale-[0.98] transition-all flex items-center justify-center overflow-hidden">
-                  <span className="relative z-10">Enter The Collection</span>
+                <Link to={siteSettings?.hero?.ctaLink || "/shop"} className="group relative h-20 px-16 bg-primary text-white rounded-[24px] font-black text-[11px] uppercase tracking-[5px] shadow-[0_20px_50px_-15px_rgba(var(--primary-rgb),0.5)] hover:scale-[1.05] active:scale-[0.98] transition-all flex items-center justify-center overflow-hidden">
+                  <span className="relative z-10">{siteSettings?.hero?.ctaText || "Enter The Collection"}</span>
                   <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-0 transition-transform duration-700" />
                   <FiArrowRight className="ml-4 group-hover:translate-x-2 transition-transform relative z-10 text-lg" />
                 </Link>
@@ -216,7 +235,7 @@ const Home = () => {
               className="relative w-[400px] aspect-[3/4.2] rounded-[80px] overflow-hidden shadow-[0_100px_150px_-50px_rgba(0,0,0,0.9)] border border-white/10 z-10 bg-[#071120] group will-change-transform"
             >
               <img 
-                src={kitchen}
+                src={siteSettings?.hero?.compImage || "https://images.unsplash.com/photo-1556910103-1c02745aae4d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"}
                 className="w-full h-full object-cover transition-transform duration-[4s] group-hover:scale-110 opacity-70" 
                 alt="Classic Vase" 
               />
@@ -231,13 +250,13 @@ const Home = () => {
                 >
                   <div className="flex items-center space-x-3">
                     <span className="w-8 h-[1px] bg-primary" />
-                    <span className="text-primary font-black text-[10px] uppercase tracking-[4px]">Artisanal Selection</span>
+                    <span className="text-primary font-black text-[10px] uppercase tracking-[4px]">{siteSettings?.hero?.compBadge || "Artisanal Selection"}</span>
                   </div>
-                  <h3 className="text-5xl font-black text-white tracking-tighter leading-none italic">The Classic <br/> <span className="text-primary">Vase</span></h3>
-                  <button className="text-white/40 font-black text-[9px] uppercase tracking-[3px] flex items-center group-hover:text-white transition-colors">
-                    <span>View Piece Details</span>
+                  <h3 className="text-5xl font-black text-white tracking-tighter leading-none italic">{siteSettings?.hero?.compTitleTop || "The Classic"} <br/> <span className="text-primary">{siteSettings?.hero?.compTitleBottom || "Vase"}</span></h3>
+                  <Link to={siteSettings?.hero?.compLinkUrl || "/shop"} className="text-white/40 font-black text-[9px] uppercase tracking-[3px] flex items-center group-hover:text-white transition-colors w-fit">
+                    <span>{siteSettings?.hero?.compLinkText || "View Piece Details"}</span>
                     <FiArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-                  </button>
+                  </Link>
                 </motion.div>
               </div>
             </motion.div>
@@ -350,23 +369,46 @@ const Home = () => {
           >
             <AnimatePresence mode="wait">
               {loadingSections ? (
-                [1,2,3,4].map(i => (
-                  <motion.div key={i} className="aspect-[4/5] bg-white rounded-[40px] animate-pulse" />
-                ))
+                <motion.div 
+                  key="loading" 
+                  className="contents"
+                  initial={{ opacity: 0 }} 
+                  animate={{ opacity: 1 }} 
+                  exit={{ opacity: 0 }}
+                >
+                  {[1,2,3,4].map(i => (
+                    <div key={i} className="aspect-[4/5] bg-white rounded-[40px] animate-pulse" />
+                  ))}
+                </motion.div>
               ) : (
-                tabData[activeTab]?.map((product, i) => (
-                  <motion.div
-                    key={product._id}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.4 }}
-                  >
-                    <ProductCard product={product} />
-                  </motion.div>
-                ))
+                <motion.div 
+                  key={activeTab} 
+                  className="contents"
+                  initial={{ opacity: 0, y: 20 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {tabData[activeTab]?.map((product) => (
+                    <div key={product._id}>
+                      <ProductCard product={product} />
+                    </div>
+                  ))}
+                </motion.div>
               )}
             </AnimatePresence>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex justify-center mt-16"
+          >
+            <Link to="/shop" className="group relative h-16 px-12 bg-white border-2 border-[#071120] text-[#071120] rounded-2xl font-black text-[11px] uppercase tracking-[4px] hover:bg-[#071120] hover:text-white transition-all flex items-center justify-center overflow-hidden">
+              <span className="relative z-10">Load More</span>
+              <FiArrowRight className="ml-4 group-hover:translate-x-2 transition-transform relative z-10 text-lg" />
+            </Link>
           </motion.div>
         </div>
       </section>
@@ -392,7 +434,7 @@ const Home = () => {
                 <motion.img 
                   whileHover={{ scale: 1.08 }}
                   transition={{ duration: 2.5 }}
-                  src="https://images.unsplash.com/photo-1616489953149-866993244903?q=80&w=1200&auto=format" 
+                  src={siteSettings?.anatomy?.image || "https://images.unsplash.com/photo-1616489953149-866993244903?q=80&w=1200&auto=format"} 
                   className="w-full h-full object-cover" 
                   alt="Showcase" 
                 />
@@ -408,10 +450,10 @@ const Home = () => {
                   <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                     <FiActivity className="text-2xl" />
                   </div>
-                  <span className="text-white font-black text-xs tracking-widest uppercase">Precision Metrics</span>
+                  <span className="text-white font-black text-xs tracking-widest uppercase">{siteSettings?.anatomy?.ratingText || "Precision Metrics"}</span>
                 </div>
                 <p className="text-white/40 text-[9px] font-black uppercase tracking-[4px] mb-2">Excellence Rating</p>
-                <p className="text-4xl font-black text-white tracking-tighter italic">99.9% <span className="text-primary">Mastery</span></p>
+                <p className="text-4xl font-black text-white tracking-tighter italic" dangerouslySetInnerHTML={{ __html: siteSettings?.anatomy?.ratingValue?.replace('Mastery', '<span class="text-primary">Mastery</span>') || `99.9% <span class="text-primary">Mastery</span>` }} />
               </motion.div>
             </motion.div>
 
@@ -421,23 +463,21 @@ const Home = () => {
                 initial="initial"
                 whileInView="whileInView"
               >
-                <motion.span variants={fadeInUp} className="text-primary font-black uppercase tracking-[10px] text-[12px] block mb-8">Unrivaled Detail</motion.span>
-                <motion.h2 variants={fadeInUp} className="text-[clamp(3rem,6vw,5.5rem)] font-black text-white tracking-tighter leading-[0.9] mb-12">
-                  The Anatomy Of <br/> <span className="text-primary italic">Absolute</span> Perfection
-                </motion.h2>
+                <motion.span variants={fadeInUp} className="text-primary font-black uppercase tracking-[10px] text-[12px] block mb-8">{siteSettings?.anatomy?.subtitle || "Unrivaled Detail"}</motion.span>
+                <motion.h2 variants={fadeInUp} className="text-[clamp(3rem,6vw,5.5rem)] font-black text-white tracking-tighter leading-[0.9] mb-12" dangerouslySetInnerHTML={{ __html: siteSettings?.anatomy?.title?.replace('Absolute', '<span class="text-primary italic">Absolute</span>') || `The Anatomy Of <br/> <span class="text-primary italic">Absolute</span> Perfection` }} />
                 <motion.p variants={fadeInUp} className="text-white/40 text-2xl font-medium leading-relaxed max-w-xl mb-16">
-                  We don't just curate furniture; we orchestrate sensory experiences. Every stitch, every grain, and every reflection is calculated to transcend the mundane.
+                  {siteSettings?.anatomy?.description || "We don't just curate furniture; we orchestrate sensory experiences. Every stitch, every grain, and every reflection is calculated to transcend the mundane."}
                 </motion.p>
                 
                 <motion.div variants={fadeInUp} className="grid grid-cols-2 gap-12 mb-20">
                   <div className="group relative">
-                    <h4 className="text-4xl font-black text-white tracking-tighter italic mb-4 transition-colors group-hover:text-primary">Sustainable</h4>
-                    <p className="text-[10px] font-black uppercase tracking-[4px] text-white/20 mb-6">Eco-Elite Materials</p>
+                    <h4 className="text-4xl font-black text-white tracking-tighter italic mb-4 transition-colors group-hover:text-primary">{siteSettings?.anatomy?.box1Title || "Sustainable"}</h4>
+                    <p className="text-[10px] font-black uppercase tracking-[4px] text-white/20 mb-6">{siteSettings?.anatomy?.box1Desc || "Eco-Elite Materials"}</p>
                     <div className="w-0 h-[2px] bg-primary group-hover:w-full transition-all duration-700" />
                   </div>
                   <div className="group relative">
-                    <h4 className="text-4xl font-black text-primary tracking-tighter italic mb-4 transition-colors group-hover:text-white">Timeless</h4>
-                    <p className="text-[10px] font-black uppercase tracking-[4px] text-white/20 mb-6">Generational Value</p>
+                    <h4 className="text-4xl font-black text-primary tracking-tighter italic mb-4 transition-colors group-hover:text-white">{siteSettings?.anatomy?.box2Title || "Timeless"}</h4>
+                    <p className="text-[10px] font-black uppercase tracking-[4px] text-white/20 mb-6">{siteSettings?.anatomy?.box2Desc || "Generational Value"}</p>
                     <div className="w-0 h-[2px] bg-white group-hover:w-full transition-all duration-700" />
                   </div>
                 </motion.div>
@@ -613,14 +653,21 @@ const Home = () => {
               <p className="text-gray-400 text-xl font-medium mb-12 max-w-2xl mx-auto">
                 Join our exclusive circle for seasonal premieres, private gallery openings, and artisanal insights.
               </p>
-              <form className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto p-2 bg-gray-50 rounded-[30px] border border-gray-100">
+              <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto p-2 bg-gray-50 rounded-[30px] border border-gray-100">
                 <input 
                   type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email address" 
+                  required
                   className="flex-grow h-14 bg-transparent rounded-2xl px-8 focus:outline-none font-medium text-gray-700"
                 />
-                <button className="h-14 px-10 bg-[#071120] text-white rounded-[22px] font-black text-[10px] uppercase tracking-[4px] hover:bg-primary transition-all shadow-xl active:scale-95">
-                  Subscribe
+                <button 
+                  type="submit" 
+                  disabled={isSubscribing}
+                  className="h-14 px-10 bg-[#071120] text-white rounded-[22px] font-black text-[10px] uppercase tracking-[4px] hover:bg-primary transition-all shadow-xl active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {isSubscribing ? 'Wait...' : 'Subscribe'}
                 </button>
               </form>
             </motion.div>

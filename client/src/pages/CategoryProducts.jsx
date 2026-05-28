@@ -13,8 +13,9 @@ const CategoryProducts = () => {
   
   const [category, setCategory] = useState(null);
   const [catLoading, setCatLoading] = useState(true);
+  const [pageNumber, setPageNumber] = useState(1);
 
-  const { products, loading, error } = useSelector((state) => state.products);
+  const { products, loading, error, pages, page } = useSelector((state) => state.products);
 
   useEffect(() => {
     const fetchCategoryAndProducts = async () => {
@@ -26,7 +27,7 @@ const CategoryProducts = () => {
         
         if (foundCat) {
           setCategory(foundCat);
-          dispatch(listProducts({ category: foundCat._id, pageSize: 40 }));
+          dispatch(listProducts({ category: foundCat._id, pageNumber, pageSize: 8 }));
         }
         setCatLoading(false);
       } catch (err) {
@@ -36,8 +37,8 @@ const CategoryProducts = () => {
     };
 
     fetchCategoryAndProducts();
-    window.scrollTo(0, 0);
-  }, [dispatch, slug]);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [dispatch, slug, pageNumber]);
 
   if (catLoading || (loading && products.length === 0)) {
     return (
@@ -111,11 +112,31 @@ const CategoryProducts = () => {
             <Link to="/shop" className="btn-primary mt-8 inline-flex px-10">Browse Other Items</Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-            {products.map((product) => (
-              <ProductCard key={product._id} product={product} />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+              {products.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
+            </div>
+            
+            {pages > 1 && (
+              <div className="flex justify-center items-center mt-20 space-x-2">
+                {[...Array(pages).keys()].map((x) => (
+                  <button
+                    key={x + 1}
+                    onClick={() => setPageNumber(x + 1)}
+                    className={`w-14 h-14 rounded-full font-black text-lg flex items-center justify-center transition-all ${
+                      x + 1 === page
+                        ? 'bg-primary text-white shadow-xl shadow-primary/30'
+                        : 'bg-white text-gray-400 hover:bg-gray-50 border border-gray-100'
+                    }`}
+                  >
+                    {x + 1}
+                  </button>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

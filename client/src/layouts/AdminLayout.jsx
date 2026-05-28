@@ -4,13 +4,15 @@ import {
   FiPieChart, 
   FiBox, 
   FiLayers, 
-  FiUsers, 
   FiShoppingBag, 
+  FiUsers, 
   FiSettings, 
   FiLogOut,
   FiBell,
   FiMenu,
-  FiX
+  FiX,
+  FiTag,
+  FiMail
 } from 'react-icons/fi';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -36,8 +38,10 @@ const AdminLayout = () => {
     { name: 'Products', icon: <FiBox />, path: '/admin/products' },
     { name: 'Categories', icon: <FiLayers />, path: '/admin/categories' },
     { name: 'Orders', icon: <FiShoppingBag />, path: '/admin/orders' },
+    { name: 'Coupons', icon: <FiTag />, path: '/admin/coupons' },
+    { name: 'Subscribers', icon: <FiMail />, path: '/admin/subscribers' },
     { name: 'Users', icon: <FiUsers />, path: '/admin/users' },
-    { name: 'Settings', icon: <FiSettings />, path: '/admin/settings' },
+    { name: 'Site Settings', icon: <FiSettings />, path: '/admin/site-settings' },
   ];
 
   const SidebarContent = () => (

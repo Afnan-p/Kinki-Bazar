@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { 
   FiHeart, 
   FiShoppingCart, 
@@ -12,13 +12,16 @@ import {
   FiStar,
   FiMessageSquare,
   FiSend,
-  FiLoader
+  FiLoader,
+  FiCamera,
+  FiX
 } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../redux/slices/cartSlice';
 import { listProductDetails } from '../redux/slices/productSlice';
 import { addToWishlist, removeFromWishlist } from '../redux/slices/authSlice';
+import ProductCard from '../components/ProductCard';
 import Rating from '../components/Rating';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
@@ -26,14 +29,18 @@ import api from '../utils/api';
 const ProductDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   
   const [qty, setQty] = useState(1);
   const [activeImg, setActiveImg] = useState(0);
   const [activeTab, setActiveTab] = useState('description');
+  const [relatedProducts, setRelatedProducts] = useState([]);
   
   // Review form state
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
+  const [reviewImages, setReviewImages] = useState([]);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [submittingReview, setSubmittingReview] = useState(false);
 
   const { product, loading, error } = useSelector((state) => state.products);
@@ -47,6 +54,14 @@ const ProductDetails = () => {
     dispatch(listProductDetails(id));
     window.scrollTo(0, 0);
   }, [dispatch, id]);
+
+  useEffect(() => {
+    if (product?.category?._id) {
+      api.get(`/products?category=${product.category._id}&pageSize=5`)
+        .then(res => setRelatedProducts(res.data.products.filter(p => p._id !== product._id).slice(0, 4)))
+        .catch(console.error);
+    }
+  }, [product]);
 
   const toggleWishlist = () => {
     if (!userInfo) {
@@ -75,6 +90,38 @@ const ProductDetails = () => {
     toast.success('Added to cart!');
   };
 
+  const handleBuyNow = () => {
+    if (product.stock === 0) return;
+    const directBuyItem = {
+      product: product._id,
+      name: product.name,
+      image: (Array.isArray(product?.images) && product.images.length > 0) ? product.images[0].url : '',
+      price: product.price,
+      qty,
+      stock: product.stock
+    };
+    navigate('/checkout', { state: { directBuyItem } });
+  };
+
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('image', file);
+    setUploadingImage(true);
+    try {
+      const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+      const { data } = await api.post('/upload', formData, config);
+      setReviewImages([...reviewImages, data.image]);
+      setUploadingImage(false);
+      toast.success('Image uploaded');
+    } catch (error) {
+      console.error(error);
+      setUploadingImage(false);
+      toast.error('Image upload failed');
+    }
+  };
+
   const submitReviewHandler = async (e) => {
     e.preventDefault();
     if (!userInfo) {
@@ -89,10 +136,11 @@ const ProductDetails = () => {
 
     try {
       setSubmittingReview(true);
-      await api.post(`/products/${id}/reviews`, { rating, comment });
+      await api.post(`/products/${id}/reviews`, { rating, comment, images: reviewImages });
       toast.success('Review submitted successfully!');
       setComment('');
       setRating(5);
+      setReviewImages([]);
       dispatch(listProductDetails(id)); // Refresh product details
       setSubmittingReview(false);
     } catch (err) {
@@ -118,31 +166,33 @@ const ProductDetails = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
-          {/* Left: Image Gallery (5 cols) */}
-          <div className="lg:col-span-5 space-y-6">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="aspect-[4/5] rounded-[48px] overflow-hidden border border-gray-50 shadow-premium group"
-            >
-              <img 
-                src={product?.images?.[activeImg]?.url || 'https://via.placeholder.com/800x1000'} 
-                alt={product?.name}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-            </motion.div>
-            <div className="grid grid-cols-4 gap-4 px-4">
-              {(product?.images || []).map((img, i) => (
-                <button 
-                  key={i}
-                  onClick={() => setActiveImg(i)}
-                  className={`aspect-square rounded-2xl overflow-hidden border-2 transition-all duration-300 ${
-                    activeImg === i ? 'border-primary shadow-xl shadow-primary/20 scale-105' : 'border-transparent opacity-40 hover:opacity-100 hover:scale-105'
-                  }`}
-                >
-                  <img src={img?.url} alt="" className="w-full h-full object-cover" />
-                </button>
-              ))}
+          {/* Left: Image Gallery (5 cols) - Sticky */}
+          <div className="lg:col-span-5 relative">
+            <div className="sticky top-32 space-y-6">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="aspect-[4/5] rounded-[40px] overflow-hidden bg-[#f8f9fa] border border-gray-100 shadow-sm group p-4 flex items-center justify-center"
+              >
+                <img 
+                  src={product?.images?.[activeImg]?.url || 'https://via.placeholder.com/800x1000'} 
+                  alt={product?.name}
+                  className="w-full h-full object-cover rounded-[32px] transition-transform duration-1000 group-hover:scale-[1.03]"
+                />
+              </motion.div>
+              <div className="grid grid-cols-4 gap-4">
+                {(product?.images || []).map((img, i) => (
+                  <button 
+                    key={i}
+                    onClick={() => setActiveImg(i)}
+                    className={`aspect-square rounded-2xl overflow-hidden bg-[#f8f9fa] p-1 transition-all duration-300 ${
+                      activeImg === i ? 'ring-2 ring-primary shadow-lg shadow-primary/20 scale-105' : 'ring-1 ring-transparent opacity-60 hover:opacity-100 hover:scale-105 hover:ring-gray-200'
+                    }`}
+                  >
+                    <img src={img?.url} alt="" className="w-full h-full object-cover rounded-xl" />
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -184,41 +234,51 @@ const ProductDetails = () => {
             </p>
 
             {/* Qty & Add to Cart */}
-            <div className="flex flex-wrap items-center gap-6 mb-12">
-              <div className="flex items-center bg-gray-50 rounded-3xl p-2 h-20 w-48 justify-between border border-gray-100 shadow-inner">
+            <div className="flex flex-wrap items-center gap-4 mb-14">
+              <div className="flex items-center bg-[#f8f9fa] rounded-full p-1.5 h-16 w-36 justify-between border border-gray-100">
                 <button 
                   onClick={() => setQty(Math.max(1, qty - 1))}
-                  className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center text-accent hover:text-primary transition-all shadow-sm active:scale-90"
+                  className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-accent hover:text-primary transition-all shadow-sm active:scale-95"
                 >
-                  <FiMinus />
+                  <FiMinus className="text-sm" />
                 </button>
-                <span className="text-2xl font-black w-10 text-center text-accent">{qty}</span>
+                <span className="text-lg font-black w-8 text-center text-accent">{qty}</span>
                 <button 
                   onClick={() => setQty(Math.min(product.stock, qty + 1))}
-                  className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center text-accent hover:text-primary transition-all shadow-sm active:scale-90"
+                  className="w-12 h-12 rounded-full bg-white flex items-center justify-center text-accent hover:text-primary transition-all shadow-sm active:scale-95"
                 >
-                  <FiPlus />
+                  <FiPlus className="text-sm" />
+                </button>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 flex-grow">
+                <button 
+                  onClick={handleAddToCart}
+                  disabled={product.stock === 0}
+                  className="bg-[#0a0f16] text-white font-black h-16 rounded-full text-xs md:text-sm tracking-widest uppercase flex items-center justify-center space-x-3 hover:bg-primary transition-colors disabled:opacity-50"
+                >
+                  <FiShoppingCart className="text-lg" />
+                  <span>Add to Basket</span>
+                </button>
+
+                <button 
+                  onClick={handleBuyNow}
+                  disabled={product.stock === 0}
+                  className="btn-primary h-16 rounded-full text-xs md:text-sm flex items-center justify-center space-x-2 shadow-xl shadow-primary/30 disabled:opacity-50 disabled:shadow-none"
+                >
+                  <span>Acquire Now</span>
                 </button>
               </div>
               
               <button 
-                onClick={handleAddToCart}
-                disabled={product.stock === 0}
-                className="flex-grow btn-primary h-20 text-xl flex items-center justify-center space-x-4 shadow-xl shadow-primary/30 disabled:opacity-50 disabled:shadow-none"
-              >
-                <FiShoppingCart className="text-2xl" />
-                <span>ADD TO BASKET</span>
-              </button>
-              
-              <button 
                 onClick={toggleWishlist}
-                className={`w-20 h-20 rounded-3xl border-2 flex items-center justify-center transition-all duration-500 ${
+                className={`w-16 h-16 rounded-full border-2 flex items-center justify-center transition-all duration-300 flex-shrink-0 ${
                   isWishlisted 
-                    ? 'bg-primary border-primary text-white shadow-xl shadow-primary/20 scale-110' 
-                    : 'border-gray-100 text-gray-300 hover:border-primary hover:text-primary'
+                    ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-105' 
+                    : 'border-gray-100 text-gray-400 hover:border-primary hover:text-primary bg-white'
                 }`}
               >
-                <FiHeart className={`text-2xl ${isWishlisted ? 'fill-current' : ''}`} />
+                <FiHeart className={`text-xl ${isWishlisted ? 'fill-current' : ''}`} />
               </button>
             </div>
 
@@ -247,19 +307,19 @@ const ProductDetails = () => {
         </div>
 
         {/* Tabs Section */}
-        <div className="mt-32">
-          <div className="flex flex-wrap border-b border-gray-100 mb-16 justify-center md:justify-start gap-4 md:gap-0">
+        <div className="mt-20 md:mt-32">
+          <div className="flex flex-wrap border-b border-gray-100 mb-12 justify-center gap-6 md:gap-12">
             {['description', 'specifications', 'reviews'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-10 py-6 font-black text-xs uppercase tracking-[4px] relative transition-all duration-300 ${
-                  activeTab === tab ? 'text-primary' : 'text-gray-400 hover:text-accent'
+                className={`pb-6 font-black text-[11px] md:text-xs uppercase tracking-[4px] relative transition-all duration-300 ${
+                  activeTab === tab ? 'text-[#0a0f16]' : 'text-gray-400 hover:text-primary'
                 }`}
               >
                 {tab}
                 {activeTab === tab && (
-                  <motion.div layoutId="tab-underline" className="absolute bottom-0 left-0 right-0 h-1.5 bg-primary rounded-t-full shadow-lg shadow-primary/20" />
+                  <motion.div layoutId="tab-underline" className="absolute bottom-[-1px] left-0 right-0 h-[3px] bg-primary shadow-sm shadow-primary/20" />
                 )}
               </button>
             ))}
@@ -350,7 +410,16 @@ const ProductDetails = () => {
                                 </div>
                                 <Rating value={review.rating} size="text-sm" />
                               </div>
-                              <p className="text-gray-500 text-lg leading-relaxed italic">"{review.comment}"</p>
+                              <p className="text-gray-500 text-lg leading-relaxed italic mb-4">"{review.comment}"</p>
+                              {review.images && review.images.length > 0 && (
+                                <div className="flex gap-4 mt-4">
+                                  {review.images.map((img, idx) => (
+                                    <div key={idx} className="w-20 h-20 rounded-2xl overflow-hidden border border-gray-100 shadow-sm cursor-pointer hover:scale-105 transition-transform">
+                                      <img src={img.url} className="w-full h-full object-cover" alt="Review upload" />
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
                             </motion.div>
                           ))
                         ) : (
@@ -406,6 +475,28 @@ const ProductDetails = () => {
                                 />
                               </div>
 
+                              <div className="space-y-4">
+                                <label className="text-[10px] font-black uppercase tracking-[4px] text-white/40 ml-2">Add Photos</label>
+                                <div className="flex flex-wrap gap-4 items-center">
+                                  {reviewImages.map((img, idx) => (
+                                    <div key={idx} className="relative w-20 h-20 rounded-2xl overflow-hidden border border-white/20">
+                                      <img src={img.url} className="w-full h-full object-cover" alt="Upload preview" />
+                                      <button 
+                                        type="button"
+                                        onClick={() => setReviewImages(reviewImages.filter((_, i) => i !== idx))}
+                                        className="absolute top-1 right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white shadow-md hover:bg-red-600 transition-colors"
+                                      >
+                                        <FiX className="text-xs" />
+                                      </button>
+                                    </div>
+                                  ))}
+                                  <label className="w-20 h-20 rounded-2xl border-2 border-dashed border-white/20 flex flex-col items-center justify-center text-white/40 hover:text-white hover:border-white/40 transition-colors cursor-pointer group">
+                                    {uploadingImage ? <FiLoader className="animate-spin text-xl" /> : <FiCamera className="text-xl mb-1 group-hover:scale-110 transition-transform" />}
+                                    <input type="file" accept="image/*" className="hidden" onChange={uploadFileHandler} disabled={uploadingImage} />
+                                  </label>
+                                </div>
+                              </div>
+
                               <button
                                 type="submit"
                                 disabled={submittingReview}
@@ -431,6 +522,32 @@ const ProductDetails = () => {
             </AnimatePresence>
           </div>
         </div>
+
+        {/* Related Products */}
+        {relatedProducts.length > 0 && (
+          <div className="mt-40 mb-20 border-t border-gray-100 pt-20">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+              <div>
+                <span className="text-primary font-black uppercase tracking-[6px] text-[10px] mb-4 block">
+                  Curated Match
+                </span>
+                <h2 className="text-4xl md:text-5xl font-black text-[#0B1020] tracking-tighter italic">
+                  You May Also <span className="text-primary text-glow">Like</span>
+                </h2>
+              </div>
+              <Link to="/shop" className="text-[10px] font-black uppercase tracking-[3px] text-gray-400 hover:text-primary transition-colors flex items-center group">
+                View All <FiPlus className="ml-2 group-hover:rotate-90 transition-transform" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10">
+              <AnimatePresence>
+                {relatedProducts.map(prod => (
+                  <ProductCard key={prod._id} product={prod} />
+                ))}
+              </AnimatePresence>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

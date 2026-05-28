@@ -14,11 +14,13 @@ import {
   FiCamera, 
   FiUploadCloud, 
   FiX, 
-  FiLoader 
+  FiLoader,
+  FiArrowRight
 } from 'react-icons/fi';
 import { logout, updateProfile } from '../redux/slices/authSlice';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import api from '../utils/api';
 
 const Profile = () => {
   const { userInfo, loading: authLoading } = useSelector((state) => state.auth);
@@ -36,6 +38,14 @@ const Profile = () => {
     phoneNumber: userInfo?.phoneNumber || '',
   });
 
+  const [showAddressForm, setShowAddressForm] = useState(false);
+  const [addressForm, setAddressForm] = useState({
+    fullName: '', phone: '', street: '', city: '', state: '', postalCode: '', country: '', isDefault: false
+  });
+
+  const [orders, setOrders] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+
   // Sync state when userInfo changes
   useEffect(() => {
     if (userInfo) {
@@ -45,6 +55,15 @@ const Profile = () => {
         phoneNumber: userInfo.phoneNumber || '',
       });
       setPreview(userInfo.profileImage || null);
+      
+      // Fetch orders
+      api.get('/orders/myorders').then(res => {
+        setOrders(res.data);
+        setLoadingOrders(false);
+      }).catch(err => {
+        console.error(err);
+        setLoadingOrders(false);
+      });
     } else {
       navigate('/login');
     }
@@ -93,10 +112,54 @@ const Profile = () => {
     }
   };
 
+  const handleAddAddress = async (e) => {
+    e.preventDefault();
+    try {
+      const updatedAddresses = [...(userInfo.addresses || []), addressForm];
+      
+      const data = new FormData();
+      data.append('addresses', JSON.stringify(updatedAddresses));
+
+      await dispatch(updateProfile(data)).unwrap();
+      setShowAddressForm(false);
+      setAddressForm({ fullName: '', phone: '', street: '', city: '', state: '', postalCode: '', country: '', isDefault: false });
+      toast.success('Address added successfully!');
+    } catch (error) {
+      toast.error(error || 'Failed to add address');
+    }
+  };
+
+  const handleDeleteAddress = async (index) => {
+    try {
+      const updatedAddresses = userInfo.addresses.filter((_, i) => i !== index);
+      const data = new FormData();
+      data.append('addresses', JSON.stringify(updatedAddresses));
+      await dispatch(updateProfile(data)).unwrap();
+      toast.success('Address removed');
+    } catch (error) {
+      toast.error('Failed to remove address');
+    }
+  };
+
+  const handleSetDefaultAddress = async (index) => {
+    try {
+      const updatedAddresses = userInfo.addresses.map((addr, i) => ({
+        ...addr,
+        isDefault: i === index
+      }));
+      const data = new FormData();
+      data.append('addresses', JSON.stringify(updatedAddresses));
+      await dispatch(updateProfile(data)).unwrap();
+      toast.success('Default address updated');
+    } catch (error) {
+      toast.error('Failed to update default address');
+    }
+  };
+
   const stats = [
-    { label: 'Orders', value: '0', icon: <FiPackage />, color: 'text-blue-500 bg-blue-50', link: '/orders' },
+    { label: 'Orders', value: orders.length.toString(), icon: <FiPackage />, color: 'text-blue-500 bg-blue-50', link: '#orders' },
     { label: 'Wishlist', value: userInfo?.wishlist?.length || '0', icon: <FiHeart />, color: 'text-red-500 bg-red-50', link: '/wishlist' },
-    { label: 'Addresses', value: '0', icon: <FiMapPin />, color: 'text-emerald-500 bg-emerald-50', link: '/profile' },
+    { label: 'Addresses', value: userInfo?.addresses?.length || '0', icon: <FiMapPin />, color: 'text-emerald-500 bg-emerald-50', link: '#addresses' },
   ];
 
   return (
@@ -181,26 +244,46 @@ const Profile = () => {
               </motion.div>
 
               <div className="grid grid-cols-1 gap-4">
-                {stats.map((stat, i) => (
-                  <Link 
-                    key={i} 
-                    to={stat.link}
-                    className="bg-white p-6 rounded-3xl border border-gray-50 flex items-center justify-between group hover:shadow-xl transition-all"
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div className={`${stat.color} w-14 h-14 rounded-2xl flex items-center justify-center text-xl transition-transform group-hover:rotate-12`}>
-                        {stat.icon}
+                {stats.map((stat, i) => {
+                  const content = (
+                    <>
+                      <div className="flex items-center space-x-4">
+                        <div className={`${stat.color} w-14 h-14 rounded-2xl flex items-center justify-center text-xl transition-transform group-hover:rotate-12`}>
+                          {stat.icon}
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">{stat.label}</p>
+                          <h4 className="text-2xl font-black text-accent">{stat.value}</h4>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">{stat.label}</p>
-                        <h4 className="text-2xl font-black text-accent">{stat.value}</h4>
+                      <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-300 opacity-0 group-hover:opacity-100 transition-all">
+                        <FiCheck />
                       </div>
-                    </div>
-                    <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-300 opacity-0 group-hover:opacity-100 transition-all">
-                      <FiCheck />
-                    </div>
-                  </Link>
-                ))}
+                    </>
+                  );
+
+                  return stat.link.startsWith('#') ? (
+                    <a 
+                      key={i} 
+                      href={stat.link}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        document.querySelector(stat.link)?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="bg-white p-6 rounded-3xl border border-gray-50 flex items-center justify-between group hover:shadow-xl transition-all cursor-pointer"
+                    >
+                      {content}
+                    </a>
+                  ) : (
+                    <Link 
+                      key={i} 
+                      to={stat.link}
+                      className="bg-white p-6 rounded-3xl border border-gray-50 flex items-center justify-between group hover:shadow-xl transition-all"
+                    >
+                      {content}
+                    </Link>
+                  );
+                })}
               </div>
             </div>
 
@@ -295,7 +378,102 @@ const Profile = () => {
                 </form>
               </motion.div>
 
-              <div className="bg-white p-12 rounded-[48px] shadow-premium border border-gray-50">
+              <div id="addresses" className="bg-white p-12 rounded-[48px] shadow-premium border border-gray-50">
+                <div className="flex items-center justify-between mb-10">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-500">
+                      <FiMapPin />
+                    </div>
+                    <h3 className="text-2xl font-black tracking-tighter">My Addresses</h3>
+                  </div>
+                  <button 
+                    onClick={() => setShowAddressForm(!showAddressForm)}
+                    className="btn-primary py-3 px-6 text-sm"
+                  >
+                    {showAddressForm ? 'Cancel' : 'Add New Address'}
+                  </button>
+                </div>
+
+                <AnimatePresence>
+                  {showAddressForm && (
+                    <motion.form 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      onSubmit={handleAddAddress}
+                      className="bg-gray-50 p-8 rounded-3xl mb-10 space-y-6 overflow-hidden"
+                    >
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-[3px] text-gray-400 ml-4">Full Name</label>
+                          <input type="text" required value={addressForm.fullName} onChange={e => setAddressForm({...addressForm, fullName: e.target.value})} className="input-premium bg-white mt-2" />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-[3px] text-gray-400 ml-4">Phone</label>
+                          <input type="text" required value={addressForm.phone} onChange={e => setAddressForm({...addressForm, phone: e.target.value})} className="input-premium bg-white mt-2" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-black uppercase tracking-[3px] text-gray-400 ml-4">Street Address</label>
+                        <input type="text" required value={addressForm.street} onChange={e => setAddressForm({...addressForm, street: e.target.value})} className="input-premium bg-white mt-2" />
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-[3px] text-gray-400 ml-4">City</label>
+                          <input type="text" required value={addressForm.city} onChange={e => setAddressForm({...addressForm, city: e.target.value})} className="input-premium bg-white mt-2" />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-[3px] text-gray-400 ml-4">State</label>
+                          <input type="text" required value={addressForm.state} onChange={e => setAddressForm({...addressForm, state: e.target.value})} className="input-premium bg-white mt-2" />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-black uppercase tracking-[3px] text-gray-400 ml-4">Postal Code</label>
+                          <input type="text" required value={addressForm.postalCode} onChange={e => setAddressForm({...addressForm, postalCode: e.target.value})} className="input-premium bg-white mt-2" />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-black uppercase tracking-[3px] text-gray-400 ml-4">Country</label>
+                        <input type="text" required value={addressForm.country} onChange={e => setAddressForm({...addressForm, country: e.target.value})} className="input-premium bg-white mt-2" />
+                      </div>
+                      <div className="flex items-center space-x-3 ml-2">
+                        <input type="checkbox" id="isDefault" checked={addressForm.isDefault} onChange={e => setAddressForm({...addressForm, isDefault: e.target.checked})} className="w-5 h-5 text-primary rounded focus:ring-primary" />
+                        <label htmlFor="isDefault" className="font-bold text-gray-500">Set as default address</label>
+                      </div>
+                      <button type="submit" className="btn-primary w-full h-14 mt-4">Save Address</button>
+                    </motion.form>
+                  )}
+                </AnimatePresence>
+
+                <div className="space-y-4">
+                  {!userInfo?.addresses?.length ? (
+                    <div className="text-center py-10 text-gray-400 font-medium">No addresses saved yet.</div>
+                  ) : (
+                    userInfo.addresses.map((addr, index) => (
+                      <div key={index} className={`p-6 rounded-3xl border-2 transition-all ${addr.isDefault ? 'border-primary bg-primary/5' : 'border-gray-100 bg-white hover:border-gray-200'}`}>
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <div className="flex items-center space-x-3 mb-2">
+                              <h4 className="font-black text-lg text-accent">{addr.fullName}</h4>
+                              {addr.isDefault && <span className="bg-primary text-white text-[9px] font-black uppercase tracking-[2px] px-3 py-1 rounded-full">Default</span>}
+                            </div>
+                            <p className="text-gray-500 font-medium">{addr.street}, {addr.city}</p>
+                            <p className="text-gray-500 font-medium">{addr.state}, {addr.postalCode}, {addr.country}</p>
+                            <p className="text-gray-400 text-sm mt-2 font-bold flex items-center"><FiPhone className="mr-2" /> {addr.phone}</p>
+                          </div>
+                          <div className="flex flex-col space-y-2">
+                            {!addr.isDefault && (
+                              <button onClick={() => handleSetDefaultAddress(index)} className="text-xs font-bold text-gray-400 hover:text-primary transition-colors">Set Default</button>
+                            )}
+                            <button onClick={() => handleDeleteAddress(index)} className="text-xs font-bold text-red-400 hover:text-red-500 transition-colors">Remove</button>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              <div id="orders" className="bg-white p-12 rounded-[48px] shadow-premium border border-gray-50">
                 <div className="flex items-center space-x-4 mb-10">
                   <div className="w-12 h-12 bg-accent/5 rounded-2xl flex items-center justify-center text-accent">
                     <FiPackage />
@@ -303,13 +481,50 @@ const Profile = () => {
                   <h3 className="text-2xl font-black tracking-tighter">Order History</h3>
                 </div>
                 
-                <div className="text-center py-20 bg-gray-50 rounded-[32px] border border-dashed border-gray-200">
-                  <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl shadow-sm text-gray-300">
-                    <FiUploadCloud />
+                {loadingOrders ? (
+                  <div className="text-center py-20">
+                    <FiLoader className="text-4xl text-primary animate-spin mx-auto" />
                   </div>
-                  <p className="text-gray-400 font-bold mb-8">You haven't placed any orders yet.</p>
-                  <Link to="/shop" className="btn-secondary inline-flex px-10">Start Your Journey</Link>
-                </div>
+                ) : orders.length === 0 ? (
+                  <div className="text-center py-20 bg-gray-50 rounded-[32px] border border-dashed border-gray-200">
+                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl shadow-sm text-gray-300">
+                      <FiUploadCloud />
+                    </div>
+                    <p className="text-gray-400 font-bold mb-8">You haven't placed any orders yet.</p>
+                    <Link to="/shop" className="btn-secondary inline-flex px-10">Start Your Journey</Link>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {orders.map(order => (
+                      <Link 
+                        key={order._id}
+                        to={`/order/${order._id}`} 
+                        className="flex flex-col md:flex-row justify-between items-start md:items-center p-6 rounded-3xl border border-gray-100 hover:border-primary/30 hover:shadow-lg transition-all group"
+                      >
+                        <div>
+                          <div className="flex items-center space-x-3 mb-2">
+                            <h4 className="font-black text-lg text-accent">#{order._id.slice(-6).toUpperCase()}</h4>
+                            <span className={`text-[9px] font-black uppercase tracking-[2px] px-3 py-1 rounded-full ${
+                              order.orderStatus === 'Delivered' ? 'text-green-500 bg-green-50' : 
+                              order.orderStatus === 'Processing' ? 'text-blue-500 bg-blue-50' : 
+                              order.orderStatus === 'Shipped' ? 'text-orange-500 bg-orange-50' : 
+                              'text-red-500 bg-red-50'
+                            }`}>
+                              {order.orderStatus || 'Pending'}
+                            </span>
+                          </div>
+                          <p className="text-sm font-bold text-gray-400">{new Date(order.createdAt).toLocaleDateString()} • {order.orderItems.length} Items</p>
+                        </div>
+                        <div className="mt-4 md:mt-0 flex items-center space-x-6">
+                          <span className="font-black text-xl text-primary">${order.totalPrice.toFixed(2)}</span>
+                          <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-300 group-hover:bg-primary group-hover:text-white transition-colors">
+                            <FiArrowRight />
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>

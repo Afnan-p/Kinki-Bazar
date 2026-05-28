@@ -91,9 +91,9 @@ const Categories = () => {
       <section className="py-32">
         <div className="container mx-auto px-6">
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="h-[450px] bg-gray-50 rounded-[56px] animate-pulse border border-gray-100 shadow-inner"></div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                <div key={i} className="h-[420px] bg-gray-50 rounded-[48px] animate-pulse border border-gray-100 shadow-inner"></div>
               ))}
             </div>
           ) : filteredCategories.length === 0 ? (
@@ -115,40 +115,45 @@ const Categories = () => {
               initial="hidden"
               whileInView="show"
               viewport={{ once: true }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8"
             >
               {filteredCategories.map((cat, i) => (
                 <motion.div 
                   key={cat?._id}
                   variants={item}
-                  className="group relative h-[500px] rounded-[56px] overflow-hidden bg-gray-100 shadow-md hover:shadow-3xl hover:shadow-primary/10 transition-all duration-700"
+                  className="group relative h-[420px] rounded-[48px] overflow-hidden bg-gray-100 shadow-lg hover:shadow-2xl hover:shadow-primary/20 transition-all duration-700 hover:-translate-y-2"
                 >
                   <Link to={`/categories/${cat?.slug}`} className="block h-full w-full">
                     <img 
                       src={cat?.image?.url || 'https://images.unsplash.com/photo-1594913785162-e67860432560?auto=format&fit=crop&w=800&q=80'} 
                       alt={cat.name} 
-                      className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110"
+                      className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110"
                       onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1594913785162-e67860432560?auto=format&fit=crop&w=800&q=80' }}
                     />
                     
                     {/* Dark Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent p-12 flex flex-col justify-end">
-                      <motion.div className="transform translate-y-8 group-hover:translate-y-0 transition-all duration-700">
-                        <span className="text-primary font-black uppercase tracking-[5px] text-[10px] mb-4 block opacity-0 group-hover:opacity-100 transition-opacity">
-                          Explore Series
-                        </span>
-                        <h3 className="text-3xl md:text-4xl font-black text-white mb-4 leading-tight group-hover:text-primary transition-colors">
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f16] via-[#0a0f16]/60 to-transparent p-8 flex flex-col justify-end transition-all duration-700 group-hover:from-[#0a0f16]/90 group-hover:via-[#0a0f16]/70">
+                      <motion.div className="transform translate-y-6 group-hover:translate-y-0 transition-all duration-700 ease-out">
+                        <div className="flex items-center space-x-2 mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                          <span className="w-8 h-[2px] bg-primary"></span>
+                          <span className="text-primary font-black uppercase tracking-[4px] text-[9px]">
+                            Curated
+                          </span>
+                        </div>
+                        
+                        <h3 className="text-2xl md:text-3xl font-black text-white mb-2 leading-tight group-hover:text-white transition-colors drop-shadow-md">
                           {cat?.name}
                         </h3>
-                        <p className="text-white/60 text-sm line-clamp-2 mb-8 font-medium opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100">
+                        
+                        <p className="text-white/70 text-xs leading-relaxed line-clamp-2 mb-6 font-medium opacity-0 group-hover:opacity-100 transition-all duration-700 delay-100 h-0 group-hover:h-auto overflow-hidden">
                           {cat?.description || 'Exclusive premium selection curated for high-end lifestyle and modern kitchen aesthetics.'}
                         </p>
                         
-                        <div className="flex items-center justify-between">
-                          <div className="w-14 h-14 rounded-2xl bg-primary text-white flex items-center justify-center shadow-xl shadow-primary/30 group-hover:rotate-[360deg] transition-all duration-1000">
-                            <FiArrowRight className="text-2xl" />
+                        <div className="flex items-center justify-between mt-auto">
+                          <div className="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/40 group-hover:rotate-[360deg] transition-all duration-1000 group-hover:bg-white group-hover:text-primary">
+                            <FiArrowRight className="text-xl" />
                           </div>
-                          <div className="text-white/20 font-black text-6xl italic tracking-tighter opacity-0 group-hover:opacity-100 transition-all duration-1000">
+                          <div className="text-white/10 font-black text-5xl italic tracking-tighter opacity-0 group-hover:opacity-100 transition-all duration-1000 translate-x-4 group-hover:translate-x-0">
                             0{i + 1}
                           </div>
                         </div>
