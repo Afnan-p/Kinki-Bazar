@@ -60,7 +60,7 @@ const Cart = () => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
-                className="bg-white p-6 rounded-3xl shadow-sm border border-gray-50 flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-8"
+                className="bg-white p-6 rounded-xl shadow-sm border border-gray-50 flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-8"
               >
                 <div className="w-32 h-32 rounded-2xl overflow-hidden flex-shrink-0">
                   <img src={item?.image} alt={item?.name} className="w-full h-full object-cover" />
@@ -106,7 +106,7 @@ const Cart = () => {
 
         {/* Summary */}
         <div className="lg:col-span-1">
-          <div className="bg-white p-8 rounded-3xl shadow-premium border border-gray-50 sticky top-28">
+          <div className="bg-white p-8 rounded-xl shadow-premium border border-gray-50 sticky top-28">
             <h3 className="text-2xl font-black mb-8">Order Summary</h3>
             
             <div className="space-y-4 mb-8">
@@ -156,3 +156,5 @@ const Cart = () => {
 };
 
 export default Cart;
+
+

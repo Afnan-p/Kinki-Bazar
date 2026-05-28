@@ -29,3 +29,5 @@ const Rating = ({ value, text, color = 'text-primary', size = 'text-xs' }) => {
 };
 
 export default Rating;
+
+

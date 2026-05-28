@@ -22,12 +22,12 @@ const UserList = () => {
 
   return (
     <div className="space-y-8">
-      <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
         <h3 className="text-xl font-black text-accent">Customer Management</h3>
         <p className="text-gray-400 text-sm mt-1">Manage and monitor all registered customers</p>
       </div>
 
-      <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         {loading ? (
           <div className="p-10 text-center text-gray-400 font-bold animate-pulse">Loading users...</div>
         ) : error ? (
@@ -99,3 +99,5 @@ const UserList = () => {
 };
 
 export default UserList;
+
+

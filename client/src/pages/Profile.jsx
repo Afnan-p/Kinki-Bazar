@@ -188,7 +188,7 @@ const Profile = () => {
               <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white p-10 rounded-[48px] shadow-premium border border-gray-50 text-center"
+                className="bg-white p-10 rounded-2xl shadow-premium border border-gray-50 text-center"
               >
                 <div className="relative inline-block mb-8 group">
                   <div className="w-40 h-40 rounded-full overflow-hidden border-8 border-gray-50 shadow-inner-premium relative">
@@ -270,7 +270,7 @@ const Profile = () => {
                         e.preventDefault();
                         document.querySelector(stat.link)?.scrollIntoView({ behavior: 'smooth' });
                       }}
-                      className="bg-white p-6 rounded-3xl border border-gray-50 flex items-center justify-between group hover:shadow-xl transition-all cursor-pointer"
+                      className="bg-white p-6 rounded-xl border border-gray-50 flex items-center justify-between group hover:shadow-xl transition-all cursor-pointer"
                     >
                       {content}
                     </a>
@@ -278,7 +278,7 @@ const Profile = () => {
                     <Link 
                       key={i} 
                       to={stat.link}
-                      className="bg-white p-6 rounded-3xl border border-gray-50 flex items-center justify-between group hover:shadow-xl transition-all"
+                      className="bg-white p-6 rounded-xl border border-gray-50 flex items-center justify-between group hover:shadow-xl transition-all"
                     >
                       {content}
                     </Link>
@@ -292,7 +292,7 @@ const Profile = () => {
               <motion.div 
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="bg-white p-12 rounded-[48px] shadow-premium border border-gray-50"
+                className="bg-white p-12 rounded-2xl shadow-premium border border-gray-50"
               >
                 <div className="flex items-center justify-between mb-12">
                   <h3 className="text-2xl font-black tracking-tighter flex items-center space-x-4">
@@ -378,7 +378,7 @@ const Profile = () => {
                 </form>
               </motion.div>
 
-              <div id="addresses" className="bg-white p-12 rounded-[48px] shadow-premium border border-gray-50">
+              <div id="addresses" className="bg-white p-12 rounded-2xl shadow-premium border border-gray-50">
                 <div className="flex items-center justify-between mb-10">
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-500">
@@ -401,7 +401,7 @@ const Profile = () => {
                       animate={{ opacity: 1, height: 'auto' }}
                       exit={{ opacity: 0, height: 0 }}
                       onSubmit={handleAddAddress}
-                      className="bg-gray-50 p-8 rounded-3xl mb-10 space-y-6 overflow-hidden"
+                      className="bg-gray-50 p-8 rounded-xl mb-10 space-y-6 overflow-hidden"
                     >
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -449,7 +449,7 @@ const Profile = () => {
                     <div className="text-center py-10 text-gray-400 font-medium">No addresses saved yet.</div>
                   ) : (
                     userInfo.addresses.map((addr, index) => (
-                      <div key={index} className={`p-6 rounded-3xl border-2 transition-all ${addr.isDefault ? 'border-primary bg-primary/5' : 'border-gray-100 bg-white hover:border-gray-200'}`}>
+                      <div key={index} className={`p-6 rounded-xl border-2 transition-all ${addr.isDefault ? 'border-primary bg-primary/5' : 'border-gray-100 bg-white hover:border-gray-200'}`}>
                         <div className="flex justify-between items-start">
                           <div>
                             <div className="flex items-center space-x-3 mb-2">
@@ -473,7 +473,7 @@ const Profile = () => {
                 </div>
               </div>
 
-              <div id="orders" className="bg-white p-12 rounded-[48px] shadow-premium border border-gray-50">
+              <div id="orders" className="bg-white p-12 rounded-2xl shadow-premium border border-gray-50">
                 <div className="flex items-center space-x-4 mb-10">
                   <div className="w-12 h-12 bg-accent/5 rounded-2xl flex items-center justify-center text-accent">
                     <FiPackage />
@@ -486,7 +486,7 @@ const Profile = () => {
                     <FiLoader className="text-4xl text-primary animate-spin mx-auto" />
                   </div>
                 ) : orders.length === 0 ? (
-                  <div className="text-center py-20 bg-gray-50 rounded-[32px] border border-dashed border-gray-200">
+                  <div className="text-center py-20 bg-gray-50 rounded-xl border border-dashed border-gray-200">
                     <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 text-2xl shadow-sm text-gray-300">
                       <FiUploadCloud />
                     </div>
@@ -499,7 +499,7 @@ const Profile = () => {
                       <Link 
                         key={order._id}
                         to={`/order/${order._id}`} 
-                        className="flex flex-col md:flex-row justify-between items-start md:items-center p-6 rounded-3xl border border-gray-100 hover:border-primary/30 hover:shadow-lg transition-all group"
+                        className="flex flex-col md:flex-row justify-between items-start md:items-center p-6 rounded-xl border border-gray-100 hover:border-primary/30 hover:shadow-lg transition-all group"
                       >
                         <div>
                           <div className="flex items-center space-x-3 mb-2">
@@ -535,3 +535,5 @@ const Profile = () => {
 };
 
 export default Profile;
+
+

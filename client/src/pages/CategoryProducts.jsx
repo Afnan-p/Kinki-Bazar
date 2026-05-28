@@ -91,7 +91,7 @@ const CategoryProducts = () => {
 
       {/* Product Grid */}
       <div className="container mx-auto px-6 -mt-10 relative z-10">
-        <div className="bg-white p-6 rounded-[32px] shadow-premium mb-16 flex items-center justify-between border border-gray-50">
+        <div className="bg-white p-6 rounded-xl shadow-premium mb-16 flex items-center justify-between border border-gray-50">
           <div className="flex items-center space-x-4">
             <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary text-xl">
               <FiShoppingBag />
@@ -107,7 +107,7 @@ const CategoryProducts = () => {
         {error ? (
           <div className="text-center py-20 text-red-500 font-bold">{error}</div>
         ) : products.length === 0 ? (
-          <div className="text-center py-32 bg-gray-50 rounded-[60px] border-2 border-dashed border-gray-200">
+          <div className="text-center py-32 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
             <p className="text-gray-400 font-black uppercase tracking-widest">No products in this collection yet.</p>
             <Link to="/shop" className="btn-primary mt-8 inline-flex px-10">Browse Other Items</Link>
           </div>
@@ -144,3 +144,5 @@ const CategoryProducts = () => {
 };
 
 export default CategoryProducts;
+
+

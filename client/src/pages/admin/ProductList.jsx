@@ -25,7 +25,7 @@ const ProductList = () => {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+      <div className="flex flex-col md:flex-row justify-between items-center bg-white p-6 rounded-lg shadow-sm border border-gray-100">
         <div className="relative w-full md:w-96 mb-4 md:mb-0">
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
           <input 
@@ -33,7 +33,7 @@ const ProductList = () => {
             placeholder="Search products..." 
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-3 pl-12 pr-4 focus:outline-none focus:border-primary transition-all"
+            className="w-full bg-gray-50 border border-gray-100 rounded-lg py-3 pl-12 pr-4 focus:outline-none focus:border-primary transition-all"
           />
         </div>
         <Link to="/admin/product/create" className="btn-primary flex items-center space-x-2 w-full md:w-auto justify-center">
@@ -42,7 +42,7 @@ const ProductList = () => {
         </Link>
       </div>
 
-      <div className="bg-white rounded-[32px] shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         {loading ? (
           <div className="p-10 text-center">Loading...</div>
         ) : (
@@ -92,3 +92,5 @@ const ProductList = () => {
 };
 
 export default ProductList;
+
+

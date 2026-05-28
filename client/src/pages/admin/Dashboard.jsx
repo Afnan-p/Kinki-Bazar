@@ -61,9 +61,9 @@ const Dashboard = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsList.map((stat, i) => (
-          <div key={i} className="bg-white p-8 rounded-[32px] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] border border-gray-100/50 relative overflow-hidden group hover:shadow-2xl hover:-translate-y-1 transition-all duration-500">
+          <div key={i} className="bg-white p-8 rounded-lg shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] border border-gray-100/50 relative overflow-hidden group hover:shadow-2xl hover:-translate-y-1 transition-all duration-500">
             <div className={`absolute top-0 right-0 w-32 h-32 ${stat.color} opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-700`} />
-            <div className={`${stat.color} w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl mb-6 shadow-xl shadow-black/5`}>
+            <div className={`${stat.color} w-14 h-14 rounded-lg flex items-center justify-center text-white text-xl mb-6 shadow-xl shadow-black/5`}>
               {stat.icon}
             </div>
             <p className="text-gray-400 text-[10px] font-black uppercase tracking-[3px] mb-2">{stat.name}</p>
@@ -79,11 +79,11 @@ const Dashboard = () => {
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white p-10 rounded-[40px] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] border border-gray-100/50">
+        <div className="bg-white p-10 rounded-lg shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] border border-gray-100/50">
           <h3 className="text-xl font-black mb-8 tracking-tight text-[#0B1020]">Revenue Overview</h3>
           <div className="h-80 relative">
             {data.length === 0 ? (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center bg-gray-50/50 rounded-3xl border border-dashed border-gray-200">
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center bg-gray-50/50 rounded-lg border border-dashed border-gray-200">
                 <FiDollarSign className="text-4xl text-gray-300 mb-4" />
                 <h4 className="font-bold text-gray-500">No Revenue Data</h4>
                 <p className="text-xs text-gray-400 font-medium mt-1">Waiting for the first transaction.</p>
@@ -108,11 +108,11 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white p-10 rounded-[40px] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] border border-gray-100/50">
+        <div className="bg-white p-10 rounded-lg shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] border border-gray-100/50">
           <h3 className="text-xl font-black mb-8 tracking-tight text-[#0B1020]">Sales Comparison</h3>
           <div className="h-80 relative">
             {data.length === 0 ? (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center bg-gray-50/50 rounded-3xl border border-dashed border-gray-200">
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center bg-gray-50/50 rounded-lg border border-dashed border-gray-200">
                 <FiShoppingBag className="text-4xl text-gray-300 mb-4" />
                 <h4 className="font-bold text-gray-500">No Sales Data</h4>
                 <p className="text-xs text-gray-400 font-medium mt-1">Awaiting your first order.</p>
@@ -133,7 +133,7 @@ const Dashboard = () => {
       </div>
 
       {/* Recent Orders */}
-      <div className="bg-white p-10 rounded-[40px] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] border border-gray-100/50">
+      <div className="bg-white p-10 rounded-lg shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] border border-gray-100/50">
         <div className="flex justify-between items-center mb-8">
           <h3 className="text-xl font-black tracking-tight text-[#0B1020]">Recent Orders</h3>
           <Link to="/admin/orders" className="bg-gray-50 hover:bg-gray-100 text-[#0B1020] font-black text-[9px] uppercase tracking-[3px] px-6 py-3 rounded-xl transition-colors">
@@ -142,7 +142,7 @@ const Dashboard = () => {
         </div>
         <div className="overflow-x-auto">
           {(!stats?.recentOrders || stats.recentOrders.length === 0) ? (
-            <div className="flex flex-col items-center justify-center text-center py-20 bg-gray-50/50 rounded-3xl border border-dashed border-gray-200">
+            <div className="flex flex-col items-center justify-center text-center py-20 bg-gray-50/50 rounded-lg border border-dashed border-gray-200">
               <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">
                 <FiShoppingBag className="text-2xl text-gray-300" />
               </div>
@@ -189,3 +189,5 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+

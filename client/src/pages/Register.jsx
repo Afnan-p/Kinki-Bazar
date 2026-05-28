@@ -51,7 +51,7 @@ const Register = () => {
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full bg-white rounded-[32px] shadow-premium p-8 md:p-12"
+        className="max-w-md w-full bg-white rounded-xl shadow-premium p-8 md:p-12"
       >
         <div className="text-center mb-10">
           <div className="flex justify-center mb-6">
@@ -161,3 +161,5 @@ const Register = () => {
 };
 
 export default Register;
+
+

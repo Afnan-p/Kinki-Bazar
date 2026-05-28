@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import Meta from '../components/Meta';
 import { motion, AnimatePresence, useScroll, useTransform, useInView, useSpring } from 'framer-motion';
 import Logo from '../components/Logo';
 import DesignerToaster from "../assets/Designer Toaster.jpg"
@@ -133,6 +134,7 @@ const Home = () => {
 
   return (
     <div className="bg-[#F6F6F7] min-h-screen overflow-x-hidden font-['Outfit'] relative selection:bg-primary selection:text-white">
+      <Meta title="Home | Kinki Bazar" />
       
       {/* 1. CINEMATIC PREMIUM HERO SECTION - UPGRADED */}
       <section className="relative h-[min(110vh,1000px)] bg-[#071120] overflow-hidden flex items-center pt-32 md:pt-48 pb-24 md:pb-32">
@@ -205,7 +207,7 @@ const Home = () => {
                 variants={fadeInUp}
                 className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-8"
               >
-                <Link to={siteSettings?.hero?.ctaLink || "/shop"} className="group relative h-20 px-16 bg-primary text-white rounded-[24px] font-black text-[11px] uppercase tracking-[5px] shadow-[0_20px_50px_-15px_rgba(var(--primary-rgb),0.5)] hover:scale-[1.05] active:scale-[0.98] transition-all flex items-center justify-center overflow-hidden">
+                <Link to={siteSettings?.hero?.ctaLink || "/shop"} className="group relative h-20 px-16 bg-primary text-white rounded-lg font-black text-[11px] uppercase tracking-[5px] shadow-[0_20px_50px_-15px_rgba(var(--primary-rgb),0.5)] hover:scale-[1.05] active:scale-[0.98] transition-all flex items-center justify-center overflow-hidden">
                   <span className="relative z-10">{siteSettings?.hero?.ctaText || "Enter The Collection"}</span>
                   <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-0 transition-transform duration-700" />
                   <FiArrowRight className="ml-4 group-hover:translate-x-2 transition-transform relative z-10 text-lg" />
@@ -232,7 +234,7 @@ const Home = () => {
               initial={{ x: 100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-[400px] aspect-[3/4.2] rounded-[80px] overflow-hidden shadow-[0_100px_150px_-50px_rgba(0,0,0,0.9)] border border-white/10 z-10 bg-[#071120] group will-change-transform"
+              className="relative w-[400px] aspect-[3/4.2] rounded-2xl overflow-hidden shadow-[0_100px_150px_-50px_rgba(0,0,0,0.9)] border border-white/10 z-10 bg-[#071120] group will-change-transform"
             >
               <img 
                 src={siteSettings?.hero?.compImage || "https://images.unsplash.com/photo-1556910103-1c02745aae4d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"}
@@ -365,7 +367,7 @@ const Home = () => {
           </div>
 
           <motion.div 
-            className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-10"
+            className="grid grid-flow-col auto-cols-[85%] sm:auto-cols-[60%] md:auto-cols-auto md:grid-cols-2 lg:grid-cols-4 md:grid-flow-row gap-5 md:gap-10 overflow-x-auto snap-x snap-mandatory no-scrollbar pb-8 -mx-4 px-4 md:mx-0 md:px-0 md:pb-0"
           >
             <AnimatePresence mode="wait">
               {loadingSections ? (
@@ -377,7 +379,7 @@ const Home = () => {
                   exit={{ opacity: 0 }}
                 >
                   {[1,2,3,4].map(i => (
-                    <div key={i} className="aspect-[4/5] bg-white rounded-[40px] animate-pulse" />
+                    <div key={i} className="snap-center w-full aspect-[4/5] bg-white rounded-2xl animate-pulse" />
                   ))}
                 </motion.div>
               ) : (
@@ -390,7 +392,7 @@ const Home = () => {
                   transition={{ duration: 0.3 }}
                 >
                   {tabData[activeTab]?.map((product) => (
-                    <div key={product._id}>
+                    <div key={product._id} className="snap-center w-full">
                       <ProductCard product={product} />
                     </div>
                   ))}
@@ -430,7 +432,7 @@ const Home = () => {
               transition={{ duration: 1.2 }}
               className="relative group"
             >
-              <div className="relative rounded-[80px] overflow-hidden aspect-[4/5.5] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] border border-white/5">
+              <div className="relative rounded-2xl overflow-hidden aspect-[4/5.5] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.8)] border border-white/5">
                 <motion.img 
                   whileHover={{ scale: 1.08 }}
                   transition={{ duration: 2.5 }}
@@ -444,7 +446,7 @@ const Home = () => {
               <motion.div 
                 animate={{ y: [0, -20, 0] }}
                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -bottom-12 -right-12 w-80 p-10 bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[50px] shadow-3xl hidden md:block"
+                className="absolute -bottom-12 -right-12 w-80 p-10 bg-white/5 backdrop-blur-3xl border border-white/10 rounded-xl shadow-3xl hidden md:block"
               >
                 <div className="flex items-center space-x-4 mb-6">
                   <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
@@ -483,7 +485,7 @@ const Home = () => {
                 </motion.div>
 
                 <motion.div variants={fadeInUp}>
-                  <Link to="/about" className="h-20 px-16 border border-white/20 text-white rounded-[24px] font-black text-[11px] uppercase tracking-[5px] inline-flex items-center hover:bg-white hover:text-[#071120] transition-all group overflow-hidden relative">
+                  <Link to="/about" className="h-20 px-16 border border-white/20 text-white rounded-lg font-black text-[11px] uppercase tracking-[5px] inline-flex items-center hover:bg-white hover:text-[#071120] transition-all group overflow-hidden relative">
                     <span className="relative z-10">Our Philosophy</span>
                     <FiArrowRight className="ml-4 group-hover:translate-x-3 transition-transform relative z-10 text-lg" />
                   </Link>
@@ -516,7 +518,7 @@ const Home = () => {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="relative group rounded-[60px] overflow-hidden shadow-2xl aspect-[3/4.2]"
+                className="relative group rounded-2xl overflow-hidden shadow-2xl aspect-[3/4.2]"
               >
                 <img src={DesignerToaster} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]" alt="Designer Toaster" />
                 <div className="absolute inset-0 bg-[#071120]/60 opacity-0 group-hover:opacity-100 transition-all duration-700 flex items-center justify-center backdrop-blur-sm">
@@ -528,7 +530,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.2 }}
-                className="p-12 bg-[#071120] text-white rounded-[60px] shadow-[0_40px_80px_-20px_rgba(7,17,32,0.4)] group"
+                className="p-12 bg-[#071120] text-white rounded-2xl shadow-[0_40px_80px_-20px_rgba(7,17,32,0.4)] group"
               >
                 <div className="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center text-primary mb-10 group-hover:bg-primary group-hover:text-white transition-all duration-500">
                   <FiZap className="text-3xl" />
@@ -548,7 +550,7 @@ const Home = () => {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1, duration: 1 }}
-              className="md:col-span-5 relative group rounded-[80px] overflow-hidden shadow-[0_60px_120px_-30px_rgba(0,0,0,0.3)] aspect-[4/6.5]"
+              className="md:col-span-5 relative group rounded-2xl overflow-hidden shadow-[0_60px_120px_-30px_rgba(0,0,0,0.3)] aspect-[4/6.5]"
             >
               <img src={ArtisanKettle} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[4s]" alt="Artisan Kettle" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#071120] via-transparent to-transparent opacity-80" />
@@ -574,7 +576,7 @@ const Home = () => {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.3 + (i * 0.2) }}
-                  className="relative group rounded-[50px] overflow-hidden shadow-xl aspect-square border border-gray-100"
+                  className="relative group rounded-xl overflow-hidden shadow-xl aspect-square border border-gray-100"
                 >
                   <img src={img} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]" alt="Detail" />
                   <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
@@ -608,7 +610,7 @@ const Home = () => {
               <motion.div 
                 key={`${product._id}-${idx}`}
                 whileHover={{ y: -10, scale: 1.02 }}
-                className="flex-shrink-0 w-[300px] md:w-[550px] aspect-[16/10] bg-white/5 border border-white/10 rounded-[40px] md:rounded-[60px] overflow-hidden relative group cursor-pointer shadow-2xl"
+                className="flex-shrink-0 w-[300px] md:w-[550px] aspect-[16/10] bg-white/5 border border-white/10 rounded-2xl md:rounded-2xl overflow-hidden relative group cursor-pointer shadow-2xl"
               >
                 <Link to={`/product/${product._id}`}>
                   <img src={product.images?.[0]?.url || "https://images.unsplash.com/photo-1581781870027-04212e231e96?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-[1.5s]" alt={product.name} />
@@ -630,7 +632,7 @@ const Home = () => {
             [1,2,3,4,5,6,1,2,3,4,5,6].map((i, idx) => (
               <motion.div 
                 key={idx}
-                className="flex-shrink-0 w-[550px] aspect-[16/10] bg-white/5 border border-white/10 rounded-[60px] animate-pulse"
+                className="flex-shrink-0 w-[550px] aspect-[16/10] bg-white/5 border border-white/10 rounded-2xl animate-pulse"
               />
             ))
           )}
@@ -653,7 +655,7 @@ const Home = () => {
               <p className="text-gray-400 text-xl font-medium mb-12 max-w-2xl mx-auto">
                 Join our exclusive circle for seasonal premieres, private gallery openings, and artisanal insights.
               </p>
-              <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto p-2 bg-gray-50 rounded-[30px] border border-gray-100">
+              <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto p-2 bg-gray-50 rounded-xl border border-gray-100">
                 <input 
                   type="email" 
                   value={email}
@@ -665,7 +667,7 @@ const Home = () => {
                 <button 
                   type="submit" 
                   disabled={isSubscribing}
-                  className="h-14 px-10 bg-[#071120] text-white rounded-[22px] font-black text-[10px] uppercase tracking-[4px] hover:bg-primary transition-all shadow-xl active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="h-14 px-10 bg-[#071120] text-white rounded-lg font-black text-[10px] uppercase tracking-[4px] hover:bg-primary transition-all shadow-xl active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {isSubscribing ? 'Wait...' : 'Subscribe'}
                 </button>
@@ -692,3 +694,5 @@ const Home = () => {
 };
 
 export default Home;
+
+

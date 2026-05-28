@@ -47,7 +47,7 @@ const OrderList = () => {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white p-6 rounded-[32px] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] border border-gray-100/50">
+      <div className="flex flex-col md:flex-row justify-between items-center bg-white p-6 rounded-lg shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] border border-gray-100/50">
         <div className="relative w-full md:w-96">
           <FiSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400" />
           <input 
@@ -55,19 +55,19 @@ const OrderList = () => {
             placeholder="Search by Order ID or Customer..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-gray-50/50 border border-transparent rounded-[20px] py-4 pl-14 pr-4 focus:outline-none focus:bg-white focus:border-primary/20 transition-all text-sm font-medium"
+            className="w-full bg-gray-50/50 border border-transparent rounded-lg py-4 pl-14 pr-4 focus:outline-none focus:bg-white focus:border-primary/20 transition-all text-sm font-medium"
           />
         </div>
       </div>
 
-      <div className="bg-white rounded-[40px] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] border border-gray-100/50 overflow-hidden p-4 md:p-8">
+      <div className="bg-white rounded-lg shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] border border-gray-100/50 overflow-hidden p-4 md:p-8">
         {loading ? (
           <div className="p-20 flex flex-col items-center justify-center text-center">
             <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
             <span className="text-gray-400 font-bold uppercase tracking-widest text-[10px]">Loading ledger...</span>
           </div>
         ) : filteredOrders.length === 0 ? (
-          <div className="flex flex-col items-center justify-center text-center py-32 bg-gray-50/30 rounded-[32px] border border-dashed border-gray-200">
+          <div className="flex flex-col items-center justify-center text-center py-32 bg-gray-50/30 rounded-lg border border-dashed border-gray-200">
             <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-sm mb-6">
               <FiSearch className="text-3xl text-gray-300" />
             </div>
@@ -110,7 +110,7 @@ const OrderList = () => {
                       </div>
                     </td>
                     <td className="py-6">
-                      <Link to={`/order/${order?._id}`} className="w-12 h-12 rounded-2xl bg-gray-50 text-gray-400 hover:text-[#0B1020] hover:bg-gray-100 transition-all flex items-center justify-center shadow-sm">
+                      <Link to={`/order/${order?._id}`} className="w-12 h-12 rounded-lg bg-gray-50 text-gray-400 hover:text-[#0B1020] hover:bg-gray-100 transition-all flex items-center justify-center shadow-sm">
                         <FiEye className="text-lg" />
                       </Link>
                     </td>
@@ -126,3 +126,5 @@ const OrderList = () => {
 };
 
 export default OrderList;
+
+

@@ -70,7 +70,7 @@ const Categories = () => {
 
       {/* Search & Filter Bar */}
       <div className="container mx-auto px-6 -mt-12 relative z-20">
-        <div className="bg-white p-6 md:p-8 rounded-[48px] shadow-3xl border border-gray-50 flex flex-col md:flex-row items-center gap-6">
+        <div className="bg-white p-6 md:p-8 rounded-2xl shadow-3xl border border-gray-50 flex flex-col md:flex-row items-center gap-6">
           <div className="relative flex-grow w-full">
             <FiSearch className="absolute left-8 top-1/2 -translate-y-1/2 text-primary text-2xl" />
             <input 
@@ -78,10 +78,10 @@ const Categories = () => {
               placeholder="What are you looking for today?" 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-gray-50 border border-transparent rounded-[32px] py-6 pl-20 pr-8 text-accent font-black text-lg focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all"
+              className="w-full bg-gray-50 border border-transparent rounded-xl py-6 pl-20 pr-8 text-accent font-black text-lg focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all"
             />
           </div>
-          <div className="bg-accent text-white px-10 py-6 rounded-[32px] font-black text-sm uppercase tracking-[3px] hidden lg:block shadow-xl">
+          <div className="bg-accent text-white px-10 py-6 rounded-xl font-black text-sm uppercase tracking-[3px] hidden lg:block shadow-xl">
             {filteredCategories.length} Collections Found
           </div>
         </div>
@@ -93,14 +93,14 @@ const Categories = () => {
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
               {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                <div key={i} className="h-[420px] bg-gray-50 rounded-[48px] animate-pulse border border-gray-100 shadow-inner"></div>
+                <div key={i} className="h-[420px] bg-gray-50 rounded-2xl animate-pulse border border-gray-100 shadow-inner"></div>
               ))}
             </div>
           ) : filteredCategories.length === 0 ? (
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="text-center py-32 bg-gray-50 rounded-[64px] border-2 border-dashed border-gray-200"
+              className="text-center py-32 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200"
             >
               <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl text-gray-200">
                 <FiLayers className="text-5xl" />
@@ -121,7 +121,7 @@ const Categories = () => {
                 <motion.div 
                   key={cat?._id}
                   variants={item}
-                  className="group relative h-[420px] rounded-[48px] overflow-hidden bg-gray-100 shadow-lg hover:shadow-2xl hover:shadow-primary/20 transition-all duration-700 hover:-translate-y-2"
+                  className="group relative h-[420px] rounded-2xl overflow-hidden bg-gray-100 shadow-lg hover:shadow-2xl hover:shadow-primary/20 transition-all duration-700 hover:-translate-y-2"
                 >
                   <Link to={`/categories/${cat?.slug}`} className="block h-full w-full">
                     <img 
@@ -169,7 +169,7 @@ const Categories = () => {
 
       {/* Luxury Promo Section */}
       <section className="pb-32 px-6">
-        <div className="container mx-auto bg-primary rounded-[64px] p-16 md:p-24 relative overflow-hidden shadow-2xl shadow-primary/30">
+        <div className="container mx-auto bg-primary rounded-2xl p-16 md:p-24 relative overflow-hidden shadow-2xl shadow-primary/30">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
           <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between text-center lg:text-left gap-12">
             <div className="max-w-2xl">
@@ -189,3 +189,5 @@ const Categories = () => {
 };
 
 export default Categories;
+
+

@@ -59,7 +59,7 @@ const OurStory = () => {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full aspect-[21/9] rounded-[40px] md:rounded-[80px] overflow-hidden mb-32 relative shadow-[0_40px_80px_-20px_rgba(0,0,0,0.2)] group"
+          className="w-full aspect-[21/9] rounded-2xl md:rounded-2xl overflow-hidden mb-32 relative shadow-[0_40px_80px_-20px_rgba(0,0,0,0.2)] group"
         >
           <img 
             src={about?.image || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80"} 
@@ -94,7 +94,7 @@ const OurStory = () => {
             }
           ].map((item, idx) => (
             <motion.div key={idx} variants={fadeInUp} className="group flex flex-col items-center text-center">
-              <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center text-[#071120] mb-8 shadow-xl border border-gray-100 group-hover:bg-primary group-hover:text-white transition-all duration-500 transform group-hover:-translate-y-2">
+              <div className="w-20 h-20 bg-white rounded-xl flex items-center justify-center text-[#071120] mb-8 shadow-xl border border-gray-100 group-hover:bg-primary group-hover:text-white transition-all duration-500 transform group-hover:-translate-y-2">
                 <div className="text-3xl">{item.icon}</div>
               </div>
               <h3 className="text-2xl font-black text-[#071120] mb-4 tracking-tighter italic">{item.title}</h3>
@@ -110,3 +110,5 @@ const OurStory = () => {
 };
 
 export default OurStory;
+
+

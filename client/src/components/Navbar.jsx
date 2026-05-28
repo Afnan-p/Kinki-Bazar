@@ -181,7 +181,7 @@ const Navbar = () => {
                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute right-0 mt-3 w-[300px] bg-white rounded-[20px] shadow-[0_25px_70px_-20px_rgba(0,0,0,0.15)] p-2 border border-gray-50 flex items-center z-50 overflow-hidden"
+                    className="absolute right-0 mt-3 w-[300px] bg-white rounded-lg shadow-[0_25px_70px_-20px_rgba(0,0,0,0.15)] p-2 border border-gray-50 flex items-center z-50 overflow-hidden"
                   >
                     <FiSearch className="text-primary ml-3 text-lg" />
                     <input 
@@ -249,11 +249,11 @@ const Navbar = () => {
                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute right-0 mt-3 w-60 bg-white rounded-[20px] shadow-[0_25px_70px_-20px_rgba(0,0,0,0.15)] p-2.5 border border-gray-50 overflow-hidden"
+                    className="absolute right-0 mt-3 w-60 bg-white rounded-lg shadow-[0_25px_70px_-20px_rgba(0,0,0,0.15)] p-2.5 border border-gray-50 overflow-hidden"
                   >
                     {userInfo ? (
                       <div className="space-y-0.5">
-                        <div className="p-3.5 mb-1.5 bg-[#071120] rounded-[16px] text-white">
+                        <div className="p-3.5 mb-1.5 bg-[#071120] rounded-lg text-white">
                           <p className="text-[6.5px] uppercase font-black text-primary tracking-[2px] mb-1">Elite</p>
                           <p className="font-black truncate text-sm leading-tight">{userInfo.name}</p>
                           <p className="text-[9px] text-white/30 truncate">{userInfo.email}</p>
@@ -397,3 +397,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+

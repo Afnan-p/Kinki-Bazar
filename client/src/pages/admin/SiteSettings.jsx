@@ -135,7 +135,7 @@ const SiteSettings = () => {
         </button>
       </div>
 
-      <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+      <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
         <div className="flex space-x-2 border-b border-gray-100 mb-6 pb-2 overflow-x-auto">
           {['hero', 'anatomy', 'about', 'contact', 'footer'].map(tab => (
             <button
@@ -184,7 +184,7 @@ const SiteSettings = () => {
                 )}
               </div>
 
-              <div className="mt-12 bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-6">
+              <div className="mt-12 bg-gray-50 p-6 rounded-lg border border-gray-100 space-y-6">
                 <h4 className="font-bold text-lg text-gray-900 border-b border-gray-200 pb-2 mb-4">Floating Card Settings</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {renderInput('hero', 'compBadge', 'Card Badge Text')}
@@ -228,7 +228,7 @@ const SiteSettings = () => {
               </div>
               {renderInput('anatomy', 'description', 'Section Description', 'text', true)}
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-50 rounded-lg border border-gray-100">
                 <div className="col-span-1 md:col-span-2">
                   <h4 className="font-bold text-sm text-gray-900 border-b border-gray-200 pb-2 mb-4">Rating Box (Left Floating)</h4>
                 </div>
@@ -236,7 +236,7 @@ const SiteSettings = () => {
                 {renderInput('anatomy', 'ratingValue', 'Rating Value')}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-gray-50 rounded-lg border border-gray-100">
                 <div className="col-span-1 md:col-span-2">
                   <h4 className="font-bold text-sm text-gray-900 border-b border-gray-200 pb-2 mb-4">Feature Boxes</h4>
                 </div>
@@ -326,17 +326,17 @@ const SiteSettings = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                   <h4 className="font-bold text-sm text-gray-900 border-b border-gray-200 pb-2 mb-4">Mission Box</h4>
                   {renderInput('about', 'missionTitle', 'Title')}
                   {renderInput('about', 'missionDesc', 'Description', 'text', true)}
                 </div>
-                <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                   <h4 className="font-bold text-sm text-gray-900 border-b border-gray-200 pb-2 mb-4">Vision Box</h4>
                   {renderInput('about', 'visionTitle', 'Title')}
                   {renderInput('about', 'visionDesc', 'Description', 'text', true)}
                 </div>
-                <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                   <h4 className="font-bold text-sm text-gray-900 border-b border-gray-200 pb-2 mb-4">Values Box</h4>
                   {renderInput('about', 'valuesTitle', 'Title')}
                   {renderInput('about', 'valuesDesc', 'Description', 'text', true)}
@@ -360,7 +360,7 @@ const SiteSettings = () => {
               </div>
 
               <div className="mt-6">
-                <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
                   <h4 className="font-bold text-sm text-gray-900 border-b border-gray-200 pb-2 mb-4">Google Map Embed</h4>
                   {renderInput('contact', 'mapUrl', 'Map iframe URL / Embed Link (src only)')}
                   <p className="text-xs text-gray-400 mt-[-10px] mb-4">Go to Google Maps &gt; Share &gt; Embed a map &gt; Copy only the URL inside the src="..." attribute.</p>
@@ -389,3 +389,5 @@ const SiteSettings = () => {
 };
 
 export default SiteSettings;
+
+

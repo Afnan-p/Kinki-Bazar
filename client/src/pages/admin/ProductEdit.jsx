@@ -143,7 +143,7 @@ const ProductEdit = () => {
   return (
     <div className="max-w-5xl mx-auto pb-20">
       <div className="flex items-center space-x-4 mb-10">
-        <Link to="/admin/products" className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-gray-400 hover:text-primary transition-all border border-gray-100 shadow-sm">
+        <Link to="/admin/products" className="w-12 h-12 rounded-lg bg-white flex items-center justify-center text-gray-400 hover:text-primary transition-all border border-gray-100 shadow-sm">
           <FiArrowLeft />
         </Link>
         <h2 className="text-3xl font-black">Edit Product</h2>
@@ -151,7 +151,7 @@ const ProductEdit = () => {
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="lg:col-span-2 space-y-8">
-          <div className="bg-white p-8 rounded-[32px] shadow-sm border border-gray-100 space-y-6">
+          <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100 space-y-6">
             <h3 className="text-lg font-black mb-4 flex items-center">
               <span className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center mr-3 text-sm">1</span>
               General Information
@@ -164,7 +164,7 @@ const ProductEdit = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Premium Ceramic Plate" 
-                className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-6 focus:outline-none focus:border-primary transition-all" 
+                className="w-full bg-gray-50 border border-gray-100 rounded-lg py-4 px-6 focus:outline-none focus:border-primary transition-all" 
                 required 
               />
             </div>
@@ -176,7 +176,7 @@ const ProductEdit = () => {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe your product in detail..." 
-                className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-6 focus:outline-none focus:border-primary transition-all resize-none" 
+                className="w-full bg-gray-50 border border-gray-100 rounded-lg py-4 px-6 focus:outline-none focus:border-primary transition-all resize-none" 
                 required
               ></textarea>
             </div>
@@ -189,7 +189,7 @@ const ProductEdit = () => {
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                   placeholder="0.00" 
-                  className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-6 focus:outline-none focus:border-primary transition-all" 
+                  className="w-full bg-gray-50 border border-gray-100 rounded-lg py-4 px-6 focus:outline-none focus:border-primary transition-all" 
                   required 
                 />
               </div>
@@ -200,14 +200,14 @@ const ProductEdit = () => {
                   value={stock}
                   onChange={(e) => setStock(e.target.value)}
                   placeholder="0" 
-                  className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-6 focus:outline-none focus:border-primary transition-all" 
+                  className="w-full bg-gray-50 border border-gray-100 rounded-lg py-4 px-6 focus:outline-none focus:border-primary transition-all" 
                   required 
                 />
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-8 rounded-[32px] shadow-sm border border-gray-100 space-y-6">
+          <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100 space-y-6">
             <h3 className="text-lg font-black mb-4 flex items-center">
               <span className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center mr-3 text-sm">2</span>
               Product Specifications
@@ -221,14 +221,14 @@ const ProductEdit = () => {
                     value={spec.key}
                     onChange={(e) => handleSpecChange(index, 'key', e.target.value)}
                     placeholder="Key (e.g. Color)" 
-                    className="flex-1 bg-gray-50 border border-gray-100 rounded-2xl py-3 px-6 focus:outline-none focus:border-primary transition-all" 
+                    className="flex-1 bg-gray-50 border border-gray-100 rounded-lg py-3 px-6 focus:outline-none focus:border-primary transition-all" 
                   />
                   <input 
                     type="text" 
                     value={spec.value}
                     onChange={(e) => handleSpecChange(index, 'value', e.target.value)}
                     placeholder="Value (e.g. Red)" 
-                    className="flex-1 bg-gray-50 border border-gray-100 rounded-2xl py-3 px-6 focus:outline-none focus:border-primary transition-all" 
+                    className="flex-1 bg-gray-50 border border-gray-100 rounded-lg py-3 px-6 focus:outline-none focus:border-primary transition-all" 
                   />
                   <button type="button" onClick={() => handleRemoveSpec(index)} className="p-3 text-gray-300 hover:text-red-500 transition-colors"><FiX /></button>
                 </div>
@@ -245,7 +245,7 @@ const ProductEdit = () => {
         </div>
 
         <div className="lg:col-span-1 space-y-8">
-          <div className="bg-white p-8 rounded-[32px] shadow-sm border border-gray-100 space-y-6">
+          <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100 space-y-6">
             <h3 className="text-lg font-black mb-4 flex items-center">
               <span className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center mr-3 text-sm">3</span>
               Media
@@ -253,7 +253,7 @@ const ProductEdit = () => {
             
             <div className="grid grid-cols-2 gap-4 mb-4">
               {images.map((img) => (
-                <div key={img.public_id} className="relative aspect-square rounded-2xl overflow-hidden group">
+                <div key={img.public_id} className="relative aspect-square rounded-lg overflow-hidden group">
                   <img src={img.url} className="w-full h-full object-cover" alt="" />
                   <button 
                     type="button"
@@ -266,21 +266,21 @@ const ProductEdit = () => {
               ))}
             </div>
 
-            <div className="relative border-2 border-dashed border-gray-100 rounded-3xl p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all">
+            <div className="relative border-2 border-dashed border-gray-100 rounded-lg p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all">
               <input 
                 type="file" 
                 multiple
                 onChange={uploadFileHandler}
                 className="absolute inset-0 opacity-0 cursor-pointer"
               />
-              <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 mb-4 group-hover:text-primary">
+              <div className="w-16 h-16 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 mb-4 group-hover:text-primary">
                 {uploading ? <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div> : <FiUpload className="text-2xl" />}
               </div>
               <p className="text-sm font-bold text-gray-500">Drop files here or click to upload</p>
             </div>
           </div>
 
-          <div className="bg-white p-8 rounded-[32px] shadow-sm border border-gray-100 space-y-6">
+          <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-100 space-y-6">
             <h3 className="text-lg font-black mb-4 flex items-center">
               <span className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center mr-3 text-sm">4</span>
               Organization
@@ -292,7 +292,7 @@ const ProductEdit = () => {
                 <select 
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 px-6 focus:outline-none focus:border-primary transition-all appearance-none cursor-pointer"
+                  className="w-full bg-gray-50 border border-gray-100 rounded-lg py-4 px-6 focus:outline-none focus:border-primary transition-all appearance-none cursor-pointer"
                   required
                 >
                   <option value="">Select Category</option>
@@ -339,3 +339,5 @@ const ProductEdit = () => {
 };
 
 export default ProductEdit;
+
+

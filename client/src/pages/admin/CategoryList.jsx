@@ -133,7 +133,7 @@ const CategoryList = () => {
   return (
     <div className="space-y-8 pb-20">
       {/* Header & Search */}
-      <div className="flex flex-col md:flex-row justify-between items-center bg-white p-8 rounded-[40px] shadow-sm border border-gray-100 gap-6">
+      <div className="flex flex-col md:flex-row justify-between items-center bg-white p-8 rounded-lg shadow-sm border border-gray-100 gap-6">
         <div className="relative w-full md:w-96">
           <FiSearch className="absolute left-6 top-1/2 -translate-y-1/2 text-primary text-xl" />
           <input 
@@ -141,7 +141,7 @@ const CategoryList = () => {
             placeholder="Search collections..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-gray-50 border border-transparent rounded-2xl py-4 pl-16 pr-6 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold"
+            className="w-full bg-gray-50 border border-transparent rounded-lg py-4 pl-16 pr-6 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold"
           />
         </div>
         <button 
@@ -154,7 +154,7 @@ const CategoryList = () => {
       </div>
 
       {/* Category List */}
-      <div className="bg-white rounded-[48px] shadow-premium border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-lg shadow-premium border border-gray-100 overflow-hidden">
         {loading ? (
           <div className="p-20 text-center space-y-4">
             <FiLoader className="text-4xl text-primary animate-spin mx-auto" />
@@ -176,7 +176,7 @@ const CategoryList = () => {
                 {filteredCategories.map((cat) => (
                   <tr key={cat?._id} className="group hover:bg-gray-50/30 transition-all duration-300">
                     <td className="p-8">
-                      <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-md border-2 border-white">
+                      <div className="w-20 h-20 rounded-lg overflow-hidden shadow-md border-2 border-white">
                         <img 
                           src={cat?.image?.url || 'https://via.placeholder.com/150'} 
                           alt={cat.name} 
@@ -211,13 +211,13 @@ const CategoryList = () => {
                       <div className="flex items-center justify-end space-x-3">
                         <button 
                           onClick={() => handleOpenModal(cat)}
-                          className="w-12 h-12 rounded-2xl bg-white border border-gray-100 text-gray-400 hover:text-primary hover:border-primary hover:shadow-lg transition-all flex items-center justify-center group/btn"
+                          className="w-12 h-12 rounded-lg bg-white border border-gray-100 text-gray-400 hover:text-primary hover:border-primary hover:shadow-lg transition-all flex items-center justify-center group/btn"
                         >
                           <FiEdit2 className="text-lg group-hover/btn:scale-110 transition-transform" />
                         </button>
                         <button 
                           onClick={() => handleDelete(cat?._id)}
-                          className="w-12 h-12 rounded-2xl bg-white border border-gray-100 text-gray-400 hover:text-red-500 hover:border-red-500 hover:shadow-lg transition-all flex items-center justify-center group/btn"
+                          className="w-12 h-12 rounded-lg bg-white border border-gray-100 text-gray-400 hover:text-red-500 hover:border-red-500 hover:shadow-lg transition-all flex items-center justify-center group/btn"
                         >
                           <FiTrash2 className="text-lg group-hover/btn:scale-110 transition-transform" />
                         </button>
@@ -255,11 +255,11 @@ const CategoryList = () => {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white rounded-[56px] shadow-3xl w-full max-w-2xl relative z-10 overflow-hidden"
+              className="bg-white rounded-lg shadow-3xl w-full max-w-2xl relative z-10 overflow-hidden"
             >
               <div className="p-10 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center text-xl">
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center text-xl">
                     <FiLayers />
                   </div>
                   <h3 className="text-3xl font-black tracking-tighter">{editMode ? 'Edit Collection' : 'New Collection'}</h3>
@@ -267,7 +267,7 @@ const CategoryList = () => {
                 <button 
                   onClick={() => setIsModalOpen(false)} 
                   disabled={submitting}
-                  className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-gray-400 hover:text-red-500 shadow-sm transition-all"
+                  className="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-gray-400 hover:text-red-500 shadow-sm transition-all"
                 >
                   <FiX className="text-2xl" />
                 </button>
@@ -280,7 +280,7 @@ const CategoryList = () => {
                     <label className="text-[10px] font-black uppercase tracking-[4px] text-gray-400 ml-2">Collection Cover</label>
                     <div 
                       onClick={() => fileInputRef.current.click()}
-                      className="relative aspect-square rounded-[40px] overflow-hidden border-4 border-dashed border-gray-100 hover:border-primary transition-all cursor-pointer group bg-gray-50/50"
+                      className="relative aspect-square rounded-lg overflow-hidden border-4 border-dashed border-gray-100 hover:border-primary transition-all cursor-pointer group bg-gray-50/50"
                     >
                       {preview ? (
                         <img src={preview} alt="Preview" className="w-full h-full object-cover" />
@@ -311,13 +311,13 @@ const CategoryList = () => {
                         type="text" 
                         value={currentCategory.name}
                         onChange={(e) => setCurrentCategory({...currentCategory, name: e.target.value})}
-                        className="w-full bg-gray-50 border border-transparent rounded-2xl py-5 px-8 focus:bg-white focus:border-primary transition-all font-black text-accent" 
+                        className="w-full bg-gray-50 border border-transparent rounded-lg py-5 px-8 focus:bg-white focus:border-primary transition-all font-black text-accent" 
                         placeholder="e.g. Modern Ceramics"
                         required 
                       />
                     </div>
                     
-                    <div className="flex items-center space-x-4 p-6 bg-gray-50 rounded-[32px] border border-gray-100 cursor-pointer group" onClick={() => setCurrentCategory({...currentCategory, isFeatured: !currentCategory.isFeatured})}>
+                    <div className="flex items-center space-x-4 p-6 bg-gray-50 rounded-lg border border-gray-100 cursor-pointer group" onClick={() => setCurrentCategory({...currentCategory, isFeatured: !currentCategory.isFeatured})}>
                       <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${currentCategory.isFeatured ? 'bg-yellow-400 text-white shadow-lg' : 'bg-white text-gray-300'}`}>
                         <FiStar className={currentCategory.isFeatured ? 'fill-current' : ''} />
                       </div>
@@ -338,7 +338,7 @@ const CategoryList = () => {
                     rows="4" 
                     value={currentCategory.description}
                     onChange={(e) => setCurrentCategory({...currentCategory, description: e.target.value})}
-                    className="w-full bg-gray-50 border border-transparent rounded-[32px] py-6 px-8 focus:bg-white focus:border-primary transition-all font-bold resize-none" 
+                    className="w-full bg-gray-50 border border-transparent rounded-lg py-6 px-8 focus:bg-white focus:border-primary transition-all font-bold resize-none" 
                     placeholder="Describe the aesthetic and purpose of this collection..."
                   ></textarea>
                 </div>
@@ -346,7 +346,7 @@ const CategoryList = () => {
                 <button 
                   type="submit" 
                   disabled={submitting}
-                  className="w-full btn-primary h-20 flex items-center justify-center space-x-4 shadow-2xl shadow-primary/30 rounded-[32px] disabled:opacity-50"
+                  className="w-full btn-primary h-20 flex items-center justify-center space-x-4 shadow-2xl shadow-primary/30 rounded-lg disabled:opacity-50"
                 >
                   {submitting ? (
                     <FiLoader className="animate-spin text-2xl" />
@@ -367,3 +367,5 @@ const CategoryList = () => {
 };
 
 export default CategoryList;
+
+

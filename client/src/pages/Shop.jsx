@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import Meta from '../components/Meta';
 import { FiFilter, FiChevronDown, FiGrid, FiList, FiSearch, FiX, FiStar, FiCheck, FiArrowRight, FiSliders } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
 import { listProducts } from '../redux/slices/productSlice';
@@ -10,8 +11,8 @@ import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 
 // Premium Shimmer Skeleton Card
 const SkeletonCard = () => (
-  <div className="bg-white rounded-[40px] overflow-hidden p-6 space-y-6 shadow-sm border border-gray-100">
-    <div className="aspect-[4/5] bg-gray-100 rounded-[30px] animate-shimmer relative overflow-hidden">
+  <div className="bg-white rounded-2xl overflow-hidden p-6 space-y-6 shadow-sm border border-gray-100">
+    <div className="aspect-[4/5] bg-gray-100 rounded-xl animate-shimmer relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-[shimmer_2s_infinite]" />
     </div>
     <div className="space-y-3">
@@ -132,6 +133,7 @@ const Shop = () => {
 
   return (
     <div className="bg-[#F5F5F7] min-h-screen pb-40 font-['Outfit']">
+      <Meta title="Shop Collections | Kinki Bazar" description="Explore our curated collection of premium products." />
       
       {/* 1. CINEMATIC LUXURY HERO SECTION */}
       <section className="relative h-[90vh] min-h-[600px] bg-[#0B1020] overflow-hidden flex items-center">
@@ -208,9 +210,9 @@ const Shop = () => {
                 rotate: [-2, 2, -2]
               }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute inset-0 bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[60px] p-8 shadow-2xl flex flex-col justify-between"
+              className="absolute inset-0 bg-white/5 backdrop-blur-3xl border border-white/10 rounded-2xl p-8 shadow-2xl flex flex-col justify-between"
             >
-              <div className="w-full aspect-square bg-white/10 rounded-[40px] overflow-hidden">
+              <div className="w-full aspect-square bg-white/10 rounded-2xl overflow-hidden">
                 <img src={products?.[0]?.images?.[0]?.url || 'https://via.placeholder.com/600'} alt="Featured" className="w-full h-full object-cover opacity-80" />
               </div>
               <div className="space-y-4 pt-6">
@@ -234,7 +236,7 @@ const Shop = () => {
       <div className={`container mx-auto px-4 md:px-10 lg:px-20 relative z-[100] transition-all duration-500 ${isFilterBarSticky ? 'fixed top-4 md:top-8 inset-x-0 !px-4' : '-mt-12 md:-mt-16'}`}>
         <motion.div 
           layout
-          className={`bg-white/80 backdrop-blur-3xl p-4 md:p-6 rounded-[28px] md:rounded-[35px] shadow-2xl border border-white flex flex-col lg:flex-row items-center gap-4 md:gap-6 lg:gap-10 ${isFilterBarSticky ? 'max-w-5xl mx-auto' : 'max-w-7xl mx-auto'}`}
+          className={`bg-white/80 backdrop-blur-3xl p-4 md:p-6 rounded-lg md:rounded-xl shadow-2xl border border-white flex flex-col lg:flex-row items-center gap-4 md:gap-6 lg:gap-10 ${isFilterBarSticky ? 'max-w-5xl mx-auto' : 'max-w-7xl mx-auto'}`}
         >
           {/* Search */}
           <div className="relative w-full lg:w-80 group">
@@ -242,7 +244,7 @@ const Shop = () => {
             <input 
               type="text" 
               placeholder="Search masterpieces..." 
-              className="w-full bg-gray-50/50 border-2 border-transparent focus:border-primary/20 focus:bg-white pl-16 pr-8 py-4 rounded-[20px] md:rounded-[22px] font-bold text-accent transition-all placeholder:text-gray-300 outline-none"
+              className="w-full bg-gray-50/50 border-2 border-transparent focus:border-primary/20 focus:bg-white pl-16 pr-8 py-4 rounded-lg md:rounded-lg font-bold text-accent transition-all placeholder:text-gray-300 outline-none"
               onChange={(e) => debouncedSearch(e.target.value)}
             />
           </div>
@@ -318,7 +320,7 @@ const Shop = () => {
                 {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => <SkeletonCard key={i} />)}
               </motion.div>
             ) : error ? (
-              <div className="text-center py-20 bg-white rounded-[60px] shadow-sm border border-red-50">
+              <div className="text-center py-20 bg-white rounded-2xl shadow-sm border border-red-50">
                 <p className="text-red-500 font-black text-2xl">{error}</p>
                 <button onClick={() => fetchProducts(1)} className="mt-8 btn-primary px-12">Retry</button>
               </div>
@@ -328,7 +330,7 @@ const Shop = () => {
                 key="empty"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white p-12 md:p-40 rounded-[50px] md:rounded-[70px] text-center border-2 border-dashed border-gray-100 shadow-premium mx-4 md:mx-0"
+                className="bg-white p-12 md:p-40 rounded-xl md:rounded-2xl text-center border-2 border-dashed border-gray-100 shadow-premium mx-4 md:mx-0"
               >
                 <motion.div 
                   animate={{ y: [0, -20, 0] }}
@@ -339,7 +341,7 @@ const Shop = () => {
                 </motion.div>
                 <h3 className="text-2xl md:text-4xl font-black text-accent mb-4 md:mb-6 tracking-tighter">No curated products found</h3>
                 <p className="text-gray-400 mb-10 md:mb-14 max-w-sm mx-auto font-medium text-sm md:text-lg leading-relaxed px-4">We couldn't find any premium masterpieces matching your current lens. Try relaxing your filters.</p>
-                <button onClick={clearFilters} className="h-14 md:h-18 px-12 md:px-16 bg-primary text-white rounded-2xl md:rounded-3xl font-black text-[10px] md:text-[11px] uppercase tracking-[5px] shadow-2xl shadow-primary/30 hover:scale-105 transition-all">
+                <button onClick={clearFilters} className="h-14 md:h-18 px-12 md:px-16 bg-primary text-white rounded-2xl md:rounded-xl font-black text-[10px] md:text-[11px] uppercase tracking-[5px] shadow-2xl shadow-primary/30 hover:scale-105 transition-all">
                   Explore Everything
                 </button>
               </motion.div>
@@ -374,7 +376,7 @@ const Shop = () => {
                 <button 
                   key={x + 1}
                   onClick={() => handlePageChange(x + 1)}
-                  className={`w-16 h-16 rounded-3xl font-black text-lg transition-all duration-700 ${
+                  className={`w-16 h-16 rounded-xl font-black text-lg transition-all duration-700 ${
                     x + 1 === page ? 'bg-accent text-white shadow-2xl shadow-accent/30 scale-125 z-10' : 'bg-white text-accent hover:bg-gray-50 border border-gray-100 hover:scale-110'
                   }`}
                 >
@@ -417,7 +419,7 @@ const Shop = () => {
                     onChange={(e) => setPriceRange(Number(e.target.value))}
                     className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-primary mb-8" 
                   />
-                  <div className="p-8 bg-gray-50 rounded-[35px] border border-gray-100 flex items-center justify-between">
+                  <div className="p-8 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-between">
                     <span className="text-sm font-bold text-gray-400">Limit:</span>
                     <span className="text-3xl font-black text-accent tracking-tighter">${priceRange > 5000 ? "Unlimited" : priceRange}</span>
                   </div>
@@ -439,7 +441,7 @@ const Shop = () => {
                   </div>
                 </div>
 
-                <button onClick={clearFilters} className="w-full py-6 bg-accent text-white rounded-3xl font-black text-[11px] uppercase tracking-[4px] shadow-2xl shadow-accent/30">
+                <button onClick={clearFilters} className="w-full py-6 bg-accent text-white rounded-xl font-black text-[11px] uppercase tracking-[4px] shadow-2xl shadow-accent/30">
                   Reset Filters
                 </button>
               </div>
@@ -452,3 +454,5 @@ const Shop = () => {
 };
 
 export default Shop;
+
+

@@ -112,19 +112,19 @@ const Checkout = () => {
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-white p-8 rounded-[32px] shadow-sm border border-gray-50"
+              className="bg-white p-8 rounded-xl shadow-sm border border-gray-50"
             >
               <h2 className="text-2xl font-black mb-8">Shipping Information</h2>
               
               <div className="space-y-4 mb-8">
                 {!userInfo?.addresses?.length ? (
-                  <div className="text-center py-10 bg-gray-50 rounded-3xl">
+                  <div className="text-center py-10 bg-gray-50 rounded-xl">
                     <p className="text-gray-500 mb-4 font-medium">You don't have any saved addresses.</p>
                     <a href="/profile#addresses" className="btn-primary py-3 px-8 text-sm inline-block">Add Address in Profile</a>
                   </div>
                 ) : (
                   userInfo.addresses.map((addr, idx) => (
-                    <label key={idx} className={`flex items-start p-6 rounded-3xl border-2 cursor-pointer transition-all ${selectedAddress === addr ? 'border-primary bg-primary/5' : 'border-gray-100 bg-white hover:border-gray-200'}`}>
+                    <label key={idx} className={`flex items-start p-6 rounded-xl border-2 cursor-pointer transition-all ${selectedAddress === addr ? 'border-primary bg-primary/5' : 'border-gray-100 bg-white hover:border-gray-200'}`}>
                       <input 
                         type="radio" 
                         name="address" 
@@ -164,7 +164,7 @@ const Checkout = () => {
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-white p-8 rounded-[32px] shadow-sm border border-gray-50"
+              className="bg-white p-8 rounded-xl shadow-sm border border-gray-50"
             >
               <h2 className="text-2xl font-black mb-8">Payment Method</h2>
               <div className="space-y-4 mb-10">
@@ -204,7 +204,7 @@ const Checkout = () => {
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-white p-8 rounded-[32px] shadow-sm border border-gray-50"
+              className="bg-white p-8 rounded-xl shadow-sm border border-gray-50"
             >
               <h2 className="text-2xl font-black mb-8">Confirm Your Order</h2>
               <div className="p-6 bg-gray-50 rounded-2xl mb-8">
@@ -229,7 +229,7 @@ const Checkout = () => {
 
         {/* Order Summary Sidebar */}
         <div className="lg:col-span-1">
-          <div className="bg-white p-8 rounded-[32px] shadow-premium border border-gray-50 sticky top-28">
+          <div className="bg-white p-8 rounded-xl shadow-premium border border-gray-50 sticky top-28">
             <h3 className="text-xl font-black mb-6">In Your Bag</h3>
             <div className="space-y-4 mb-8 max-h-[300px] overflow-y-auto pr-2">
               {checkoutItems.map((item) => (
@@ -309,3 +309,5 @@ const Checkout = () => {
 };
 
 export default Checkout;
+
+

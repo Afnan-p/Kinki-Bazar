@@ -102,7 +102,7 @@ const CouponList = () => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             onSubmit={handleSubmit}
-            className="bg-white p-8 rounded-[32px] border border-gray-100 shadow-sm overflow-hidden"
+            className="bg-white p-8 rounded-lg border border-gray-100 shadow-sm overflow-hidden"
           >
             <h3 className="text-xl font-bold mb-6">New Promo Code</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
@@ -162,7 +162,7 @@ const CouponList = () => {
         )}
       </AnimatePresence>
 
-      <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -237,3 +237,5 @@ const CouponList = () => {
 };
 
 export default CouponList;
+
+

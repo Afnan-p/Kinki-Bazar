@@ -36,19 +36,19 @@
   }
 
   .btn-primary {
-    @apply bg-primary hover:bg-primary-dark text-white font-black py-4 px-8 rounded-2xl transition-all duration-500 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-primary/20 flex items-center justify-center space-x-2;
+    @apply bg-primary hover:bg-primary-dark text-white font-black py-4 px-8 rounded-lg transition-all duration-500 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-primary/20 flex items-center justify-center space-x-2;
   }
   
   .btn-secondary {
-    @apply bg-white hover:bg-gray-50 text-accent border border-gray-100 font-black py-4 px-8 rounded-2xl transition-all duration-500 transform hover:scale-[1.02] active:scale-[0.98] shadow-sm flex items-center justify-center space-x-2;
+    @apply bg-white hover:bg-gray-50 text-accent border border-gray-100 font-black py-4 px-8 rounded-lg transition-all duration-500 transform hover:scale-[1.02] active:scale-[0.98] shadow-sm flex items-center justify-center space-x-2;
   }
 
   .card-premium {
-    @apply bg-white rounded-[32px] shadow-premium hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.12)] transition-all duration-700 overflow-hidden border border-gray-50;
+    @apply bg-white rounded-xl shadow-premium hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.12)] transition-all duration-700 overflow-hidden border border-gray-50;
   }
 
   .input-premium {
-    @apply w-full bg-gray-50 border-none rounded-2xl py-4 px-6 focus:ring-2 focus:ring-primary/20 font-bold transition-all placeholder:text-gray-400 placeholder:font-medium;
+    @apply w-full bg-gray-50 border-none rounded-xl py-4 px-6 focus:ring-2 focus:ring-primary/20 font-bold transition-all placeholder:text-gray-400 placeholder:font-medium;
   }
 
   .badge-premium {

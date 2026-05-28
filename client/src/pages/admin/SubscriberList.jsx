@@ -42,7 +42,7 @@ const SubscriberList = () => {
         <p className="text-gray-500 font-medium">Manage your newsletter subscribers ({subscribers.length}).</p>
       </div>
 
-      <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -100,3 +100,5 @@ const SubscriberList = () => {
 };
 
 export default SubscriberList;
+
+

@@ -61,16 +61,16 @@ const Contact = () => {
             transition={{ duration: 0.8 }}
             className="space-y-12"
           >
-            <div className="bg-white p-10 rounded-[40px] shadow-xl border border-gray-100 space-y-10">
+            <div className="bg-white p-6 md:p-10 rounded-2xl shadow-xl border border-gray-100 space-y-8 md:space-y-10">
               <h3 className="text-3xl font-black text-[#071120] tracking-tighter italic mb-8 border-b border-gray-100 pb-6">Direct Channels</h3>
               
               <div className="flex items-start space-x-6 group">
                 <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 flex-shrink-0">
                   <FiMail className="text-xl" />
                 </div>
-                <div>
+                <div className="flex-1 min-w-0">
                   <h4 className="text-[10px] font-black uppercase tracking-[4px] text-gray-400 mb-2">Electronic Mail</h4>
-                  <a href={`mailto:${contact?.email}`} className="text-xl font-bold text-[#071120] hover:text-primary transition-colors">{contact?.email || 'concierge@kinkibazar.com'}</a>
+                  <a href={`mailto:${contact?.email}`} className="text-lg md:text-xl font-bold text-[#071120] hover:text-primary transition-colors break-all md:break-normal">{contact?.email || 'concierge@kinkibazar.com'}</a>
                 </div>
               </div>
 
@@ -78,9 +78,9 @@ const Contact = () => {
                 <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 flex-shrink-0">
                   <FiPhone className="text-xl" />
                 </div>
-                <div>
+                <div className="flex-1 min-w-0">
                   <h4 className="text-[10px] font-black uppercase tracking-[4px] text-gray-400 mb-2">Concierge Desk</h4>
-                  <a href={`tel:${contact?.phone}`} className="text-xl font-bold text-[#071120] hover:text-primary transition-colors">{contact?.phone || '+1 (800) 555-0199'}</a>
+                  <a href={`tel:${contact?.phone}`} className="text-lg md:text-xl font-bold text-[#071120] hover:text-primary transition-colors">{contact?.phone || '+1 (800) 555-0199'}</a>
                 </div>
               </div>
 
@@ -88,9 +88,9 @@ const Contact = () => {
                 <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 flex-shrink-0">
                   <FiMapPin className="text-xl" />
                 </div>
-                <div>
+                <div className="flex-1 min-w-0">
                   <h4 className="text-[10px] font-black uppercase tracking-[4px] text-gray-400 mb-2">Flagship Location</h4>
-                  <p className="text-lg font-medium text-[#071120] leading-relaxed max-w-[250px]">{contact?.address || '123 Luxury Ave, Beverly Hills, CA 90210'}</p>
+                  <p className="text-base md:text-lg font-medium text-[#071120] leading-relaxed max-w-[250px]">{contact?.address || '123 Luxury Ave, Beverly Hills, CA 90210'}</p>
                 </div>
               </div>
             </div>
@@ -102,20 +102,19 @@ const Contact = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="h-full min-h-[500px]"
+            className="h-full min-h-[350px] md:min-h-[500px]"
           >
-            <div className="w-full h-full rounded-[40px] overflow-hidden shadow-2xl border border-white relative group">
+            <div className="w-full h-full min-h-[350px] md:min-h-[500px] rounded-2xl overflow-hidden shadow-2xl border border-white relative group">
               <div className="absolute inset-0 bg-[#071120]/5 group-hover:bg-transparent transition-colors duration-500 pointer-events-none z-10" />
               {contact?.mapUrl ? (
                 <iframe 
                   src={contact.mapUrl} 
                   width="100%" 
                   height="100%" 
-                  style={{ border: 0, minHeight: '500px' }} 
+                  className="absolute inset-0 w-full h-full border-0 grayscale group-hover:grayscale-0 transition-all duration-1000"
                   allowFullScreen="" 
                   loading="lazy" 
                   referrerPolicy="no-referrer-when-downgrade"
-                  className="grayscale group-hover:grayscale-0 transition-all duration-1000"
                 ></iframe>
               ) : (
                 <div className="w-full h-full min-h-[500px] bg-gray-200 flex items-center justify-center text-gray-400">
@@ -132,3 +131,5 @@ const Contact = () => {
 };
 
 export default Contact;
+
+

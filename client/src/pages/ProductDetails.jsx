@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Meta from '../components/Meta';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { 
   FiHeart, 
@@ -155,6 +156,11 @@ const ProductDetails = () => {
 
   return (
     <div className="bg-white min-h-screen">
+      <Meta 
+        title={`${product.name} | Kinki Bazar`} 
+        description={product.description.substring(0, 160)} 
+        image={product.images?.[0]?.url} 
+      />
       <div className="container mx-auto px-4 md:px-6 py-10">
         {/* Breadcrumb */}
         <div className="flex items-center space-x-2 text-[10px] font-black uppercase tracking-[2px] text-gray-400 mb-12">
@@ -172,12 +178,12 @@ const ProductDetails = () => {
               <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="aspect-[4/5] rounded-[40px] overflow-hidden bg-[#f8f9fa] border border-gray-100 shadow-sm group p-4 flex items-center justify-center"
+                className="aspect-[4/5] rounded-2xl overflow-hidden bg-[#f8f9fa] border border-gray-100 shadow-sm group p-4 flex items-center justify-center"
               >
                 <img 
                   src={product?.images?.[activeImg]?.url || 'https://via.placeholder.com/800x1000'} 
                   alt={product?.name}
-                  className="w-full h-full object-cover rounded-[32px] transition-transform duration-1000 group-hover:scale-[1.03]"
+                  className="w-full h-full object-cover rounded-xl transition-transform duration-1000 group-hover:scale-[1.03]"
                 />
               </motion.div>
               <div className="grid grid-cols-4 gap-4">
@@ -336,7 +342,7 @@ const ProductDetails = () => {
                   className="text-gray-500 leading-loose text-lg font-medium text-center md:text-left"
                 >
                   <p className="mb-8">{product.description}</p>
-                  <div className="bg-gray-50 p-12 rounded-[48px] border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-10">
+                  <div className="bg-gray-50 p-12 rounded-2xl border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-10">
                     <div className="text-center md:text-left">
                       <h4 className="text-2xl font-black text-accent mb-4">Crafted for Excellence</h4>
                       <p className="max-w-md text-base">Every piece in our collection undergoes rigorous quality checks to ensure it meets the Kinki Bazar standard of luxury.</p>
@@ -357,7 +363,7 @@ const ProductDetails = () => {
                   className="grid grid-cols-1 md:grid-cols-2 gap-8"
                 >
                   {(product?.specifications || []).map((spec, i) => (
-                    <div key={i} className="flex justify-between items-center p-8 bg-white border border-gray-100 rounded-[32px] shadow-sm hover:shadow-md transition-shadow">
+                    <div key={i} className="flex justify-between items-center p-8 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow">
                       <span className="font-black text-[10px] uppercase tracking-widest text-gray-400">{spec?.key}</span>
                       <span className="font-black text-accent text-lg">{spec?.value}</span>
                     </div>
@@ -394,7 +400,7 @@ const ProductDetails = () => {
                               initial={{ opacity: 0, x: -20 }}
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: i * 0.1 }}
-                              className="p-10 bg-white border border-gray-100 rounded-[40px] shadow-sm group hover:shadow-xl transition-all duration-500"
+                              className="p-10 bg-white border border-gray-100 rounded-2xl shadow-sm group hover:shadow-xl transition-all duration-500"
                             >
                               <div className="flex justify-between items-start mb-6">
                                 <div className="flex items-center space-x-5">
@@ -423,7 +429,7 @@ const ProductDetails = () => {
                             </motion.div>
                           ))
                         ) : (
-                          <div className="text-center py-20 bg-gray-50 rounded-[40px] border border-dashed border-gray-200">
+                          <div className="text-center py-20 bg-gray-50 rounded-2xl border border-dashed border-gray-200">
                             <FiMessageSquare className="text-5xl text-gray-200 mx-auto mb-6" />
                             <p className="text-gray-400 font-black uppercase tracking-widest">No reviews yet. Be the first!</p>
                           </div>
@@ -434,14 +440,14 @@ const ProductDetails = () => {
                     {/* Right: Submission Form */}
                     <div className="lg:col-span-5">
                       <div className="sticky top-32">
-                        <div className="bg-accent p-12 rounded-[56px] text-white shadow-3xl relative overflow-hidden">
+                        <div className="bg-accent p-12 rounded-xl text-white shadow-3xl relative overflow-hidden">
                           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
                           
                           <h3 className="text-3xl font-black tracking-tighter mb-4">Leave a Review</h3>
                           <p className="text-white/60 mb-10 text-sm font-medium">Share your experience with this premium piece to help our community.</p>
                           
                           {!userInfo ? (
-                            <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20 text-center">
+                            <div className="bg-white/10 backdrop-blur-md rounded-xl p-8 border border-white/20 text-center">
                               <p className="font-bold mb-6">Please login to share your thoughts.</p>
                               <Link to="/login" className="btn-primary w-full inline-flex">Login Now</Link>
                             </div>
@@ -471,7 +477,7 @@ const ProductDetails = () => {
                                   value={comment}
                                   onChange={(e) => setComment(e.target.value)}
                                   placeholder="What did you love about this piece?"
-                                  className="w-full bg-white/5 border border-white/10 rounded-3xl p-6 text-white placeholder-white/20 focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all min-h-[150px] resize-none"
+                                  className="w-full bg-white/5 border border-white/10 rounded-xl p-6 text-white placeholder-white/20 focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all min-h-[150px] resize-none"
                                 />
                               </div>
 
@@ -554,3 +560,5 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
+
+

@@ -118,7 +118,7 @@ const OrderDetails = () => {
         </div>
 
         {/* Tracking Timeline */}
-        <div className="bg-white p-8 md:p-12 rounded-[40px] shadow-sm border border-gray-100 mb-8 overflow-x-auto">
+        <div className="bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-gray-100 mb-8 overflow-x-auto">
           <h3 className="text-xl font-black mb-10 text-[#0B1020]">Order Status</h3>
           <div className="relative min-w-[500px]">
             <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-100 -translate-y-1/2 rounded-full" />
@@ -153,11 +153,11 @@ const OrderDetails = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            <div className="bg-white p-8 rounded-[40px] shadow-sm border border-gray-100">
+            <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
               <h3 className="text-xl font-black mb-6 text-[#0B1020]">Items Ordered</h3>
               <div className="space-y-6">
                 {order.orderItems.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-6 p-4 rounded-3xl hover:bg-gray-50 transition-colors">
+                  <div key={idx} className="flex items-center gap-6 p-4 rounded-xl hover:bg-gray-50 transition-colors">
                     <div className="w-20 h-20 rounded-2xl overflow-hidden bg-gray-100 flex-shrink-0">
                       <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                     </div>
@@ -173,7 +173,7 @@ const OrderDetails = () => {
           </div>
 
           <div className="space-y-8">
-            <div className="bg-white p-8 rounded-[40px] shadow-sm border border-gray-100">
+            <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
               <h3 className="text-xl font-black mb-6 text-[#0B1020]">Order Summary</h3>
               <div className="space-y-4">
                 <div className="flex justify-between text-gray-500 font-medium">
@@ -196,7 +196,7 @@ const OrderDetails = () => {
             </div>
 
             {order.shippingAddress && (
-              <div className="bg-white p-8 rounded-[40px] shadow-sm border border-gray-100">
+              <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
                 <h3 className="text-lg font-black mb-4 flex items-center gap-2 text-[#0B1020]"><FiMapPin className="text-primary"/> Shipping</h3>
                 <p className="font-bold mb-1 text-[#0B1020]">{order.shippingAddress.fullName}</p>
                 <p className="text-sm text-gray-500">{order.shippingAddress.street}, {order.shippingAddress.city}</p>
@@ -205,7 +205,7 @@ const OrderDetails = () => {
               </div>
             )}
             
-            <div className="bg-white p-8 rounded-[40px] shadow-sm border border-gray-100">
+            <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
               <h3 className="text-lg font-black mb-4 flex items-center gap-2 text-[#0B1020]"><FiCreditCard className="text-primary"/> Payment</h3>
               <p className="font-bold text-sm mb-2 text-gray-500">Method: <span className="text-[#0B1020]">{order.paymentMethod}</span></p>
               {order.isPaid ? (
@@ -226,3 +226,5 @@ const OrderDetails = () => {
 };
 
 export default OrderDetails;
+
+

@@ -94,14 +94,14 @@ const About = () => {
               viewport={{ once: true }}
               className="relative"
             >
-              <div className="relative rounded-[60px] overflow-hidden shadow-2xl">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <img 
                   src="https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1200&q=80" 
                   alt="Craftsmanship" 
                   className="w-full h-[600px] object-cover"
                 />
               </div>
-              <div className="absolute -bottom-10 -right-10 bg-primary p-12 rounded-[48px] shadow-2xl hidden md:block">
+              <div className="absolute -bottom-10 -right-10 bg-primary p-12 rounded-2xl shadow-2xl hidden md:block">
                 <p className="text-white font-black text-4xl italic">Since 2021</p>
               </div>
             </motion.div>
@@ -122,11 +122,11 @@ const About = () => {
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-8">
-                <div className="p-8 bg-gray-50 rounded-[32px] border border-gray-100">
+                <div className="p-8 bg-gray-50 rounded-xl border border-gray-100">
                   <h4 className="font-black text-accent text-2xl mb-2">100%</h4>
                   <p className="text-gray-400 text-sm font-bold uppercase tracking-widest">Artisanal Selection</p>
                 </div>
-                <div className="p-8 bg-gray-50 rounded-[32px] border border-gray-100">
+                <div className="p-8 bg-gray-50 rounded-xl border border-gray-100">
                   <h4 className="font-black text-accent text-2xl mb-2">24h</h4>
                   <p className="text-gray-400 text-sm font-bold uppercase tracking-widest">Support Response</p>
                 </div>
@@ -176,9 +176,9 @@ const About = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
                 viewport={{ once: true }}
-                className="bg-white p-10 rounded-[48px] shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 group"
+                className="bg-white p-10 rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 group"
               >
-                <div className={`${feature.color} w-16 h-16 rounded-[24px] flex items-center justify-center text-2xl mb-8 group-hover:rotate-12 transition-transform`}>
+                <div className={`${feature.color} w-16 h-16 rounded-lg flex items-center justify-center text-2xl mb-8 group-hover:rotate-12 transition-transform`}>
                   {feature.icon}
                 </div>
                 <h4 className="font-black text-accent text-xl mb-4">{feature.title}</h4>
@@ -192,7 +192,7 @@ const About = () => {
       {/* CTA Footer */}
       <section className="py-32 bg-white">
         <div className="container mx-auto px-6">
-          <div className="bg-primary rounded-[60px] p-16 md:p-24 text-center relative overflow-hidden shadow-2xl shadow-primary/30">
+          <div className="bg-primary rounded-2xl p-16 md:p-24 text-center relative overflow-hidden shadow-2xl shadow-primary/30">
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
             <div className="relative z-10">
               <h2 className="text-4xl md:text-7xl font-black text-white mb-8 tracking-tighter">Ready to Start Your <br/> Premium Journey?</h2>
@@ -215,3 +215,5 @@ const About = () => {
 };
 
 export default About;
+
+
