@@ -18,6 +18,7 @@ const authUser = asyncHandler(async (req, res) => {
       role: user.role,
       profileImage: user.profileImage,
       phoneNumber: user.phoneNumber,
+      addresses: user.addresses || [],
       token: generateToken(user._id),
     });
   } else {
@@ -53,6 +54,7 @@ const registerUser = asyncHandler(async (req, res) => {
       role: user.role,
       profileImage: user.profileImage,
       phoneNumber: user.phoneNumber,
+      addresses: user.addresses || [],
       token: generateToken(user._id),
     });
   } else {
@@ -75,6 +77,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
       role: user.role,
       profileImage: user.profileImage,
       phoneNumber: user.phoneNumber,
+      addresses: user.addresses || [],
     });
   } else {
     res.status(404);
@@ -110,6 +113,16 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       user.phoneNumber = req.body.phoneNumber;
     }
 
+    if (req.body.addresses) {
+      try {
+        user.addresses = typeof req.body.addresses === 'string' 
+          ? JSON.parse(req.body.addresses) 
+          : req.body.addresses;
+      } catch (error) {
+        console.error('Error parsing addresses:', error);
+      }
+    }
+
     if (req.body.password) {
       user.password = req.body.password;
     }
@@ -124,6 +137,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       role: updatedUser.role,
       profileImage: updatedUser.profileImage,
       phoneNumber: updatedUser.phoneNumber,
+      addresses: updatedUser.addresses || [],
       token: generateToken(updatedUser._id),
     });
   } else {

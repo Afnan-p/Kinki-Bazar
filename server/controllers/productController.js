@@ -220,7 +220,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 // @route   POST /api/products/:id/reviews
 // @access  Private
 const createProductReview = asyncHandler(async (req, res) => {
-  const { rating, comment } = req.body;
+  const { rating, comment, images } = req.body;
 
   const product = await Product.findById(req.params.id);
 
@@ -238,6 +238,7 @@ const createProductReview = asyncHandler(async (req, res) => {
       name: req.user.name,
       rating: Number(rating),
       comment,
+      images: images || [],
       user: req.user._id,
     };
 

@@ -31,6 +31,9 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const settingsRoutes = require('./routes/settingsRoutes');
+const couponRoutes = require('./routes/couponRoutes');
+const subscriberRoutes = require('./routes/subscriberRoutes');
 
 app.get('/', (req, res) => {
   res.send('API is running...');
@@ -42,6 +45,9 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/coupons', couponRoutes);
+app.use('/api/subscribers', subscriberRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
