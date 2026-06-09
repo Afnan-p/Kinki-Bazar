@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { useSelector, useDispatch } from 'react-redux';
 import { getSiteSettings } from '../redux/slices/settingsSlice';
 import { FiAward, FiGlobe, FiFeather } from 'react-icons/fi'; // Premium Icons
@@ -11,6 +11,15 @@ const OurStory = () => {
   useEffect(() => {
     dispatch(getSiteSettings());
   }, [dispatch]);
+
+  const targetRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ["start end", "end start"]
+  });
+  
+  // Image moves down as user scrolls down, creating depth
+  const y = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
 
   const fadeInUp = {
     initial: { opacity: 0, y: 30 },
@@ -53,18 +62,20 @@ const OurStory = () => {
           </motion.p>
         </motion.div>
 
-        {/* Cinematic Image Reveal */}
+        {/* Cinematic Image Reveal with Parallax */}
         <motion.div 
+          ref={targetRef}
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="w-full aspect-[21/9] rounded-2xl md:rounded-2xl overflow-hidden mb-32 relative shadow-[0_40px_80px_-20px_rgba(0,0,0,0.2)] group"
         >
-          <img 
+          <motion.img 
+            style={{ y, scale: 1.15 }} // Scaled up slightly to prevent edges showing during parallax
             src={about?.image || "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80"} 
             alt="Heritage" 
-            className="w-full h-full object-cover transition-transform duration-[4s] group-hover:scale-105" 
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[4s] group-hover:scale-105" 
           />
           <div className="absolute inset-0 bg-[#071120]/10 mix-blend-overlay" />
         </motion.div>

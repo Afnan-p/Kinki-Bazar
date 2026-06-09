@@ -72,7 +72,7 @@ const Checkout = () => {
 
       const { data } = await api.post('/orders', orderData);
       toast.success('Order placed successfully!');
-      navigate(`/order/${data._id}`);
+      navigate(`/success/${data._id}`);
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to place order');
       setIsPlacingOrder(false);
@@ -112,9 +112,9 @@ const Checkout = () => {
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-white p-8 rounded-xl shadow-sm border border-gray-50"
+              className="bg-white p-10 rounded-[32px] shadow-premium border border-gray-100"
             >
-              <h2 className="text-2xl font-black mb-8">Shipping Information</h2>
+              <h2 className="text-3xl font-black mb-8 text-[#0B1020] tracking-tighter">Shipping Destination</h2>
               
               <div className="space-y-4 mb-8">
                 {!userInfo?.addresses?.length ? (
@@ -124,21 +124,22 @@ const Checkout = () => {
                   </div>
                 ) : (
                   userInfo.addresses.map((addr, idx) => (
-                    <label key={idx} className={`flex items-start p-6 rounded-xl border-2 cursor-pointer transition-all ${selectedAddress === addr ? 'border-primary bg-primary/5' : 'border-gray-100 bg-white hover:border-gray-200'}`}>
+                    <label key={idx} className={`flex items-start p-6 rounded-2xl border-2 cursor-pointer transition-all duration-300 ${selectedAddress === addr ? 'border-[#0B1020] bg-[#0B1020] text-white shadow-2xl scale-[1.02]' : 'border-gray-100 bg-white hover:border-gray-200'}`}>
                       <input 
                         type="radio" 
                         name="address" 
-                        className="mt-1 w-5 h-5 text-primary focus:ring-primary mr-4"
+                        className="mt-1 w-5 h-5 text-primary focus:ring-primary mr-4 opacity-0 absolute"
                         checked={selectedAddress === addr}
                         onChange={() => setSelectedAddress(addr)}
                       />
-                      <div>
-                        <div className="flex items-center space-x-3 mb-1">
-                          <h4 className="font-black text-lg text-accent">{addr.fullName}</h4>
+                      <div className="w-full relative">
+                        {selectedAddress === addr && <FiCheck className="absolute top-0 right-0 text-primary text-xl" />}
+                        <div className="flex items-center space-x-3 mb-2">
+                          <h4 className={`font-black text-xl ${selectedAddress === addr ? 'text-white' : 'text-[#0B1020]'}`}>{addr.fullName}</h4>
                           {addr.isDefault && <span className="bg-primary text-white text-[9px] font-black uppercase tracking-[2px] px-2 py-0.5 rounded-full">Default</span>}
                         </div>
-                        <p className="text-gray-500 font-medium text-sm">{addr.street}, {addr.city}, {addr.state}, {addr.postalCode}, {addr.country}</p>
-                        <p className="text-gray-400 font-bold text-xs mt-1">Phone: {addr.phone}</p>
+                        <p className={`${selectedAddress === addr ? 'text-gray-300' : 'text-gray-500'} font-medium text-sm leading-relaxed max-w-sm`}>{addr.street}, {addr.city}, {addr.state}, {addr.postalCode}, {addr.country}</p>
+                        <p className={`${selectedAddress === addr ? 'text-primary' : 'text-gray-400'} font-bold text-xs mt-3 uppercase tracking-widest`}>Ph: {addr.phone}</p>
                       </div>
                     </label>
                   ))
@@ -164,9 +165,9 @@ const Checkout = () => {
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-white p-8 rounded-xl shadow-sm border border-gray-50"
+              className="bg-white p-10 rounded-[32px] shadow-premium border border-gray-100"
             >
-              <h2 className="text-2xl font-black mb-8">Payment Method</h2>
+              <h2 className="text-3xl font-black mb-8 text-[#0B1020] tracking-tighter">Payment Method</h2>
               <div className="space-y-4 mb-10">
                 {[
                   { id: 'Razorpay', name: 'Razorpay (Cards, UPI, Netbanking)', img: 'https://img.icons8.com/color/48/000000/razorpay.png' },
@@ -175,21 +176,17 @@ const Checkout = () => {
                 ].map((m) => (
                   <label 
                     key={m.id}
-                    className={`flex items-center justify-between p-6 rounded-2xl border-2 cursor-pointer transition-all ${
-                      paymentMethod === m.id ? 'border-primary bg-primary/5' : 'border-gray-100 hover:border-gray-200'
+                    className={`flex items-center justify-between p-6 rounded-2xl border-2 cursor-pointer transition-all duration-300 ${
+                      paymentMethod === m.id ? 'border-[#0B1020] bg-[#0B1020] text-white shadow-2xl scale-[1.02]' : 'border-gray-100 hover:border-gray-200'
                     }`}
                   >
                     <div className="flex items-center space-x-4">
-                      <input 
-                        type="radio" 
-                        name="payment" 
-                        checked={paymentMethod === m.id}
-                        onChange={() => setPaymentMethod(m.id)}
-                        className="w-5 h-5 text-primary" 
-                      />
-                      <span className="font-bold">{m.name}</span>
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === m.id ? 'border-primary' : 'border-gray-300'}`}>
+                        {paymentMethod === m.id && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
+                      </div>
+                      <span className="font-black text-lg">{m.name}</span>
                     </div>
-                    <img src={m.img} className="h-8 grayscale opacity-50" alt="" />
+                    <img src={m.img} className={`h-8 transition-all duration-300 ${paymentMethod === m.id ? 'grayscale-0 opacity-100 brightness-200' : 'grayscale opacity-50'}`} alt="" />
                   </label>
                 ))}
               </div>
@@ -204,9 +201,9 @@ const Checkout = () => {
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-white p-8 rounded-xl shadow-sm border border-gray-50"
+              className="bg-white p-10 rounded-[32px] shadow-premium border border-gray-100"
             >
-              <h2 className="text-2xl font-black mb-8">Confirm Your Order</h2>
+              <h2 className="text-3xl font-black mb-8 text-[#0B1020] tracking-tighter">Confirm & Pay</h2>
               <div className="p-6 bg-gray-50 rounded-2xl mb-8">
                 <h4 className="font-bold mb-4 uppercase text-xs tracking-widest text-gray-400">Shipping To:</h4>
                 <p className="font-bold">{selectedAddress?.fullName}</p>

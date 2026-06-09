@@ -94,6 +94,80 @@ const OrderDetails = () => {
     doc.save(`Invoice_${order._id.slice(-6).toUpperCase()}.pdf`);
   };
 
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  };
+
+  const handleRazorpayPayment = async () => {
+    const res = await loadRazorpayScript();
+
+    if (!res) {
+      toast.error('Razorpay SDK failed to load. Are you online?');
+      return;
+    }
+
+    try {
+      toast.loading('Initializing payment...', { id: 'razorpay' });
+      
+      // 1. Get Razorpay Key ID
+      const { data: keyData } = await api.get('/config/razorpay');
+      
+      // 2. Create Razorpay Order
+      const { data: razorpayOrder } = await api.post(`/orders/${id}/razorpay/create`);
+
+      toast.dismiss('razorpay');
+
+      const options = {
+        key: keyData,
+        amount: razorpayOrder.amount,
+        currency: razorpayOrder.currency,
+        name: 'Kinki Bazar',
+        description: 'Premium E-Commerce Payment',
+        image: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80', // Replace with your actual logo
+        order_id: razorpayOrder.id,
+        handler: async function (response) {
+          try {
+            toast.loading('Verifying payment...', { id: 'verify' });
+            
+            // 3. Verify Payment
+            const { data: verifyData } = await api.post(`/orders/${id}/razorpay/verify`, response);
+            
+            if (verifyData.success) {
+              toast.success('Payment successful!', { id: 'verify' });
+              setOrder(verifyData.order);
+            }
+          } catch (error) {
+            toast.error(error.response?.data?.message || 'Payment verification failed', { id: 'verify' });
+          }
+        },
+        prefill: {
+          name: userInfo.name,
+          email: userInfo.email,
+          contact: order.shippingAddress?.phone || ''
+        },
+        theme: {
+          color: '#1A56DB' // Primary color
+        }
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
+
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Error initializing payment', { id: 'razorpay' });
+    }
+  };
+
   if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin w-10 h-10 border-4 border-primary border-t-transparent rounded-full" /></div>;
   if (!order) return <div className="min-h-screen flex items-center justify-center font-bold text-xl">Order Not Found</div>;
 
@@ -213,8 +287,18 @@ const OrderDetails = () => {
                   <FiCheckCircle /> Paid on {new Date(order.paidAt).toLocaleDateString()}
                 </div>
               ) : (
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl text-xs font-black uppercase tracking-widest">
-                  <FiClock /> Pending
+                <div className="space-y-4">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl text-xs font-black uppercase tracking-widest">
+                    <FiClock /> Pending
+                  </div>
+                  {order.paymentMethod === 'Razorpay' && (
+                    <button
+                      onClick={handleRazorpayPayment}
+                      className="w-full btn-primary h-12 flex items-center justify-center space-x-2 font-bold"
+                    >
+                      <span>Pay with Razorpay</span>
+                    </button>
+                  )}
                 </div>
               )}
             </div>

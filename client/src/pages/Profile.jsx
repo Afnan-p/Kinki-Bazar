@@ -15,7 +15,8 @@ import {
   FiUploadCloud, 
   FiX, 
   FiLoader,
-  FiArrowRight
+  FiArrowRight,
+  FiShield
 } from 'react-icons/fi';
 import { logout, updateProfile } from '../redux/slices/authSlice';
 import { Link, useNavigate } from 'react-router-dom';
@@ -45,6 +46,13 @@ const Profile = () => {
 
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
+
+  // 2FA State
+  const { data: settingsData } = useSelector((state) => state.settings);
+  const [qrCode, setQrCode] = useState(null);
+  const [secret, setSecret] = useState('');
+  const [twoFactorCode, setTwoFactorCode] = useState('');
+  const [is2FASetupLoading, setIs2FASetupLoading] = useState(false);
 
   // Sync state when userInfo changes
   useEffect(() => {
@@ -156,6 +164,38 @@ const Profile = () => {
     }
   };
 
+  const handleGenerate2FA = async () => {
+    try {
+      setIs2FASetupLoading(true);
+      const res = await api.post('/users/2fa/generate');
+      setQrCode(res.data.qrCodeUrl);
+      setSecret(res.data.secret);
+      setIs2FASetupLoading(false);
+    } catch (error) {
+      setIs2FASetupLoading(false);
+      toast.error('Failed to generate 2FA');
+    }
+  };
+
+  const handleEnable2FA = async (e) => {
+    e.preventDefault();
+    try {
+      setIs2FASetupLoading(true);
+      await api.post('/users/2fa/enable', { code: twoFactorCode });
+      toast.success('Two-Factor Authentication enabled!');
+      // Update local userInfo to reflect 2FA is enabled
+      const updatedUser = { ...userInfo, twoFactorEnabled: true };
+      localStorage.setItem('userInfo', JSON.stringify(updatedUser));
+      dispatch({ type: 'auth/login/fulfilled', payload: updatedUser }); // Quick state update
+      setQrCode(null);
+      setTwoFactorCode('');
+      setIs2FASetupLoading(false);
+    } catch (error) {
+      setIs2FASetupLoading(false);
+      toast.error(error.response?.data?.message || 'Invalid code');
+    }
+  };
+
   const stats = [
     { label: 'Orders', value: orders.length.toString(), icon: <FiPackage />, color: 'text-blue-500 bg-blue-50', link: '#orders' },
     { label: 'Wishlist', value: userInfo?.wishlist?.length || '0', icon: <FiHeart />, color: 'text-red-500 bg-red-50', link: '/wishlist' },
@@ -188,7 +228,7 @@ const Profile = () => {
               <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white p-10 rounded-2xl shadow-premium border border-gray-50 text-center"
+                className="bg-white p-10 rounded-2xl shadow-premium border border-gray-200 text-center"
               >
                 <div className="relative inline-block mb-8 group">
                   <div className="w-40 h-40 rounded-full overflow-hidden border-8 border-gray-50 shadow-inner-premium relative">
@@ -270,7 +310,7 @@ const Profile = () => {
                         e.preventDefault();
                         document.querySelector(stat.link)?.scrollIntoView({ behavior: 'smooth' });
                       }}
-                      className="bg-white p-6 rounded-xl border border-gray-50 flex items-center justify-between group hover:shadow-xl transition-all cursor-pointer"
+                      className="bg-white p-6 rounded-xl border border-gray-200 flex items-center justify-between group hover:shadow-xl transition-all cursor-pointer"
                     >
                       {content}
                     </a>
@@ -278,7 +318,7 @@ const Profile = () => {
                     <Link 
                       key={i} 
                       to={stat.link}
-                      className="bg-white p-6 rounded-xl border border-gray-50 flex items-center justify-between group hover:shadow-xl transition-all"
+                      className="bg-white p-6 rounded-xl border border-gray-200 flex items-center justify-between group hover:shadow-xl transition-all"
                     >
                       {content}
                     </Link>
@@ -292,7 +332,7 @@ const Profile = () => {
               <motion.div 
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="bg-white p-12 rounded-2xl shadow-premium border border-gray-50"
+                className="bg-white p-12 rounded-2xl shadow-premium border border-gray-200"
               >
                 <div className="flex items-center justify-between mb-12">
                   <h3 className="text-2xl font-black tracking-tighter flex items-center space-x-4">
@@ -378,7 +418,7 @@ const Profile = () => {
                 </form>
               </motion.div>
 
-              <div id="addresses" className="bg-white p-12 rounded-2xl shadow-premium border border-gray-50">
+              <div id="addresses" className="bg-white p-12 rounded-2xl shadow-premium border border-gray-200">
                 <div className="flex items-center justify-between mb-10">
                   <div className="flex items-center space-x-4">
                     <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-500">
@@ -472,8 +512,76 @@ const Profile = () => {
                   )}
                 </div>
               </div>
+              
+              {settingsData?.platform?.twoFactorAuth && (
+                <div id="security" className="bg-white p-12 rounded-2xl shadow-premium border border-gray-200">
+                  <div className="flex items-center space-x-4 mb-10">
+                    <div className="w-12 h-12 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-500">
+                      <FiShield />
+                    </div>
+                    <h3 className="text-2xl font-black tracking-tighter">Security Settings</h3>
+                  </div>
 
-              <div id="orders" className="bg-white p-12 rounded-2xl shadow-premium border border-gray-50">
+                  <div className="bg-gray-50 p-8 rounded-xl">
+                    <h4 className="font-bold text-lg mb-2 text-accent">Two-Factor Authentication (2FA)</h4>
+                    
+                    {userInfo?.twoFactorEnabled ? (
+                      <div className="flex items-center space-x-3 text-emerald-600 bg-emerald-50 p-4 rounded-xl">
+                        <FiCheck className="text-xl" />
+                        <span className="font-bold">2FA is currently enabled on your account.</span>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="text-gray-500 mb-6 text-sm">Add an extra layer of security to your account. We'll ask for a code from your authenticator app when you log in.</p>
+                        
+                        {!qrCode ? (
+                          <button 
+                            onClick={handleGenerate2FA}
+                            disabled={is2FASetupLoading}
+                            className="btn-primary py-3 px-6"
+                          >
+                            {is2FASetupLoading ? 'Generating...' : 'Setup Authenticator App'}
+                          </button>
+                        ) : (
+                          <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="space-y-6 bg-white p-6 rounded-xl border border-gray-100"
+                          >
+                            <div>
+                              <p className="font-bold mb-4">1. Scan this QR code with Google Authenticator or Authy:</p>
+                              <div className="bg-white p-4 rounded-xl border inline-block mb-2">
+                                <img src={qrCode} alt="2FA QR Code" className="w-48 h-48" />
+                              </div>
+                              <p className="text-xs text-gray-400">Secret Key: <span className="font-mono bg-gray-100 px-2 py-1 rounded text-gray-600">{secret}</span></p>
+                            </div>
+                            
+                            <form onSubmit={handleEnable2FA}>
+                              <p className="font-bold mb-2">2. Enter the 6-digit code from your app:</p>
+                              <div className="flex gap-4">
+                                <input 
+                                  type="text" 
+                                  required
+                                  value={twoFactorCode}
+                                  onChange={(e) => setTwoFactorCode(e.target.value)}
+                                  placeholder="000000"
+                                  maxLength="6"
+                                  className="input-premium max-w-[200px] text-center tracking-widest font-black"
+                                />
+                                <button type="submit" disabled={is2FASetupLoading} className="btn-primary px-8">
+                                  {is2FASetupLoading ? 'Verifying...' : 'Verify & Enable'}
+                                </button>
+                              </div>
+                            </form>
+                          </motion.div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div id="orders" className="bg-white p-12 rounded-2xl shadow-premium border border-gray-200">
                 <div className="flex items-center space-x-4 mb-10">
                   <div className="w-12 h-12 bg-accent/5 rounded-2xl flex items-center justify-center text-accent">
                     <FiPackage />

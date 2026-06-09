@@ -11,6 +11,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [code, setCode] = useState('');
+  const [is2FAStep, setIs2FAStep] = useState(false);
   
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -25,13 +27,18 @@ const Login = () => {
   }, [location, navigate]);
 
   const { userInfo, loading, error } = useSelector((state) => state.auth);
+  const { data: settingsData } = useSelector((state) => state.settings);
 
   useEffect(() => {
     if (userInfo) {
-      if (userInfo.role === 'admin') {
-        navigate('/admin');
+      if (userInfo.requires2FA) {
+        setIs2FAStep(true);
       } else {
-        navigate('/');
+        if (userInfo.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/');
+        }
       }
     }
     if (error) {
@@ -42,8 +49,10 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(login({ email, password }));
+    dispatch(login({ email, password, code }));
   };
+
+  const isRegistrationEnabled = settingsData?.platform?.registrationStatus !== false;
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-20">
@@ -103,6 +112,25 @@ const Login = () => {
             </div>
           </div>
 
+          {is2FAStep && (
+            <div className="space-y-2">
+              <label className="text-sm font-bold text-gray-700 ml-1">Authentication Code</label>
+              <div className="relative">
+                <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input 
+                  type="text" 
+                  required
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  placeholder="6-digit code"
+                  maxLength="6"
+                  className="w-full bg-gray-50 border border-gray-100 rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all tracking-widest font-black text-lg"
+                />
+              </div>
+              <p className="text-xs text-gray-500 mt-2 text-center">Open your Authenticator app to get the code.</p>
+            </div>
+          )}
+
           <button 
             type="submit" 
             disabled={loading}
@@ -120,10 +148,16 @@ const Login = () => {
         </form>
 
         <div className="mt-10 text-center">
-          <p className="text-gray-500">
-            Don't have an account? {' '}
-            <Link to="/register" className="text-primary font-black hover:underline">Create Account</Link>
-          </p>
+          {isRegistrationEnabled ? (
+            <p className="text-gray-500">
+              Don't have an account? {' '}
+              <Link to="/register" className="text-primary font-black hover:underline">Create Account</Link>
+            </p>
+          ) : (
+            <p className="text-gray-400 text-sm">
+              New account creation is currently disabled.
+            </p>
+          )}
         </div>
       </motion.div>
     </div>

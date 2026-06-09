@@ -15,9 +15,14 @@ const getSafeUserInfo = () => {
 // Async Thunks
 export const login = createAsyncThunk(
   'auth/login',
-  async ({ email, password }, { rejectWithValue }) => {
+  async ({ email, password, code }, { rejectWithValue }) => {
     try {
-      const { data } = await api.post('/users/login', { email, password });
+      const { data } = await api.post('/users/login', { email, password, code });
+      
+      if (data.requires2FA) {
+        return data; // Return early, don't save to localStorage
+      }
+      
       localStorage.setItem('userInfo', JSON.stringify(data));
       return data;
     } catch (error) {

@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import ScrollToTop from './components/ScrollToTop';
+import { useDispatch } from 'react-redux';
+import { getSiteSettings } from './redux/slices/settingsSlice';
 
 // Layouts
 import MainLayout from './layouts/MainLayout';
@@ -22,6 +24,7 @@ import Checkout from './pages/Checkout';
 import Categories from './pages/Categories';
 import CategoryProducts from './pages/CategoryProducts';
 import OrderDetails from './pages/OrderDetails';
+import OrderSuccess from './pages/OrderSuccess';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/Dashboard';
@@ -40,6 +43,12 @@ import SubscriberList from './pages/admin/SubscriberList';
 import { PrivateRoute, AdminRoute } from './components/ProtectedRoute';
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getSiteSettings());
+  }, [dispatch]);
+
   return (
     <Router>
       <ScrollToTop />
@@ -64,6 +73,7 @@ function App() {
             <Route path="profile" element={<Profile />} />
             <Route path="checkout" element={<Checkout />} />
             <Route path="order/:id" element={<OrderDetails />} />
+            <Route path="success/:id" element={<OrderSuccess />} />
           </Route>
         </Route>
 

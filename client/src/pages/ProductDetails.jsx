@@ -171,39 +171,48 @@ const ProductDetails = () => {
           <span className="text-accent">{product.name}</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
-          {/* Left: Image Gallery (5 cols) - Sticky */}
-          <div className="lg:col-span-5 relative">
-            <div className="sticky top-32 space-y-6">
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="aspect-[4/5] rounded-2xl overflow-hidden bg-[#f8f9fa] border border-gray-100 shadow-sm group p-4 flex items-center justify-center"
-              >
-                <img 
-                  src={product?.images?.[activeImg]?.url || 'https://via.placeholder.com/800x1000'} 
-                  alt={product?.name}
-                  className="w-full h-full object-cover rounded-xl transition-transform duration-1000 group-hover:scale-[1.03]"
-                />
-              </motion.div>
-              <div className="grid grid-cols-4 gap-4">
-                {(product?.images || []).map((img, i) => (
-                  <button 
-                    key={i}
-                    onClick={() => setActiveImg(i)}
-                    className={`aspect-square rounded-2xl overflow-hidden bg-[#f8f9fa] p-1 transition-all duration-300 ${
-                      activeImg === i ? 'ring-2 ring-primary shadow-lg shadow-primary/20 scale-105' : 'ring-1 ring-transparent opacity-60 hover:opacity-100 hover:scale-105 hover:ring-gray-200'
-                    }`}
-                  >
-                    <img src={img?.url} alt="" className="w-full h-full object-cover rounded-xl" />
-                  </button>
-                ))}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start relative">
+          {/* Left: Image Gallery (5 cols) */}
+          <div className="lg:col-span-5 flex flex-col gap-4 relative">
+            <div className="sticky top-32">
+              {/* Main Image Container */}
+              <div className="w-full bg-[#f8f9fa] rounded-3xl border border-primary/20 shadow-sm overflow-hidden relative aspect-[4/5] group cursor-crosshair">
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="absolute inset-0"
+                >
+                  <img 
+                    src={product?.images?.[activeImg]?.url || 'https://via.placeholder.com/800x1000'}
+                    alt={product?.name}
+                    className="w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-[1.15]"
+                  />
+                </motion.div>
               </div>
+              
+              {/* Thumbnails */}
+              {(product?.images || []).length > 1 && (
+                <div className="flex flex-wrap justify-center gap-4 mt-6">
+                  {product.images.map((img, i) => (
+                    <button 
+                      key={i}
+                      onClick={() => setActiveImg(i)}
+                      className={`w-20 h-20 md:w-24 md:h-24 rounded-2xl p-1 bg-white border transition-all duration-300 ${
+                        activeImg === i 
+                          ? 'border-primary shadow-lg shadow-primary/20 scale-105' 
+                          : 'border-gray-100 opacity-60 hover:opacity-100 hover:border-gray-300 hover:scale-105'
+                      }`}
+                    >
+                      <img src={img?.url} alt={`Thumbnail ${i+1}`} className="w-full h-full object-cover rounded-[12px]" />
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
           {/* Right: Product Info (7 cols) */}
-          <div className="lg:col-span-7 flex flex-col">
+          <div className="lg:col-span-7 flex flex-col pt-4">
             <div className="mb-10">
               <div className="flex items-center space-x-3 mb-6">
                 <span className="bg-primary/10 text-primary text-[10px] font-black uppercase tracking-[3px] px-5 py-2 rounded-full">
@@ -314,18 +323,20 @@ const ProductDetails = () => {
 
         {/* Tabs Section */}
         <div className="mt-20 md:mt-32">
-          <div className="flex flex-wrap border-b border-gray-100 mb-12 justify-center gap-6 md:gap-12">
+          <div className="flex flex-wrap justify-center gap-3 bg-gray-50/80 backdrop-blur-3xl p-2 rounded-full w-fit mx-auto border border-gray-100 shadow-sm mb-16">
             {['description', 'specifications', 'reviews'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`pb-6 font-black text-[11px] md:text-xs uppercase tracking-[4px] relative transition-all duration-300 ${
-                  activeTab === tab ? 'text-[#0a0f16]' : 'text-gray-400 hover:text-primary'
+                className={`px-8 py-4 rounded-full font-black text-[10px] md:text-xs uppercase tracking-[4px] transition-all duration-500 relative group overflow-hidden ${
+                  activeTab === tab 
+                    ? 'bg-[#071120] text-white shadow-xl scale-105' 
+                    : 'text-gray-400 hover:text-[#071120]'
                 }`}
               >
-                {tab}
+                <span className="relative z-10">{tab}</span>
                 {activeTab === tab && (
-                  <motion.div layoutId="tab-underline" className="absolute bottom-[-1px] left-0 right-0 h-[3px] bg-primary shadow-sm shadow-primary/20" />
+                  <motion.div layoutId="pdpTabGlow" className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent opacity-50" />
                 )}
               </button>
             ))}
@@ -341,14 +352,24 @@ const ProductDetails = () => {
                   exit={{ opacity: 0, y: -20 }}
                   className="text-gray-500 leading-loose text-lg font-medium text-center md:text-left"
                 >
-                  <p className="mb-8">{product.description}</p>
-                  <div className="bg-gray-50 p-12 rounded-2xl border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-10">
-                    <div className="text-center md:text-left">
-                      <h4 className="text-2xl font-black text-accent mb-4">Crafted for Excellence</h4>
-                      <p className="max-w-md text-base">Every piece in our collection undergoes rigorous quality checks to ensure it meets the Kinki Bazar standard of luxury.</p>
+                  <p className="mb-16 text-[#071120]/80 text-xl md:text-2xl leading-relaxed font-medium tracking-tight max-w-4xl mx-auto text-center">
+                    {product.description}
+                  </p>
+                  
+                  <div className="bg-[#071120] p-12 md:p-16 rounded-[32px] border border-gray-800 flex flex-col md:flex-row items-center justify-between gap-10 shadow-2xl relative overflow-hidden">
+                    {/* Background Glow */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px]" />
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px]" />
+                    
+                    <div className="text-center md:text-left relative z-10 flex-1">
+                      <h4 className="text-3xl md:text-4xl font-black text-white mb-4 tracking-tighter italic">Crafted for Excellence</h4>
+                      <p className="max-w-md mx-auto md:mx-0 text-white/60 text-lg leading-relaxed">
+                        Every piece in our collection undergoes rigorous quality checks to ensure it meets the elite Kinki Bazar standard of luxury.
+                      </p>
                     </div>
-                    <div className="w-32 h-32 rounded-full border-8 border-white bg-primary flex items-center justify-center text-white shadow-xl">
-                      <FiCheckCircle className="text-5xl" />
+                    
+                    <div className="w-24 h-24 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl flex items-center justify-center text-primary shadow-2xl relative z-10 group hover:scale-110 transition-transform">
+                      <FiCheckCircle className="text-4xl" />
                     </div>
                   </div>
                 </motion.div>

@@ -317,9 +317,88 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 3. THE LUXURY EDIT SHOWCASE - KEPT SECTION */}
-      <section className="py-24 bg-[#F6F6F7] relative overflow-hidden" id="luxury-edit">
+      {/* 2.5 NEW: CATEGORY EXPLORATION */}
+      <section className="py-24 bg-white relative border-b border-gray-100">
         <div className={containerClass}>
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+            <motion.div 
+              variants={fadeInUp}
+              initial="initial"
+              whileInView="whileInView"
+              viewport={{ once: true }}
+            >
+              <span className="text-primary font-black uppercase tracking-[8px] text-[10px] mb-4 block">Shop By Category</span>
+              <h2 className="text-4xl md:text-5xl font-black text-[#071120] tracking-tighter">
+                Explore The <span className="text-primary italic">Collections</span>
+              </h2>
+            </motion.div>
+            <motion.div
+              variants={fadeInUp}
+              initial="initial"
+              whileInView="whileInView"
+              viewport={{ once: true }}
+            >
+              <Link to="/categories" className="group flex items-center space-x-3 text-sm font-black uppercase tracking-widest text-[#071120] hover:text-primary transition-colors">
+                <span>View All Categories</span>
+                <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                  <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+                </div>
+              </Link>
+            </motion.div>
+          </div>
+
+          <motion.div 
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="whileInView"
+            viewport={{ once: true }}
+            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6"
+          >
+            {loadingSections ? (
+              [...Array(6)].map((_, i) => (
+                <div key={i} className="aspect-[4/5] bg-gray-100 rounded-2xl animate-pulse" />
+              ))
+            ) : categories.length > 0 ? (
+              categories.slice(0, 12).map((category) => (
+                <motion.div
+                  key={category._id}
+                  variants={fadeInUp}
+                >
+                  <Link 
+                    to={`/categories/${category.slug}`}
+                    className="group block relative aspect-[4/5] rounded-2xl overflow-hidden bg-[#071120] shadow-sm hover:shadow-xl transition-shadow"
+                  >
+                    <img 
+                      src={category.image || "https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80"} 
+                      alt={category.name}
+                      className="w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-110 transition-all duration-[1.5s]"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#071120] via-[#071120]/20 to-transparent" />
+                    <div className="absolute inset-0 p-6 flex flex-col justify-end text-center">
+                      <h3 className="text-white font-black text-lg leading-tight tracking-tight mb-2 group-hover:-translate-y-2 transition-transform duration-500">
+                        {category.name}
+                      </h3>
+                      <div className="h-[2px] w-0 bg-primary mx-auto group-hover:w-12 transition-all duration-500" />
+                    </div>
+                  </Link>
+                </motion.div>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12 text-gray-400 font-bold">No categories found.</div>
+            )}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* 3. THE LUXURY EDIT SHOWCASE - PREMIUM DARK */}
+      <section className="py-32 bg-[#071120] relative overflow-hidden" id="luxury-edit">
+        {/* Decorative Background Elements */}
+        <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[150px]" />
+          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[150px]" />
+        </div>
+
+        <div className={`${containerClass} relative z-10`}>
           <div className="text-center mb-20">
             <motion.span 
               variants={fadeInUp}
@@ -333,7 +412,7 @@ const Home = () => {
               variants={fadeInUp}
               initial="initial"
               whileInView="whileInView"
-              className="text-[clamp(2.5rem,5vw,5rem)] font-black text-[#071120] tracking-tighter mb-14"
+              className="text-[clamp(2.5rem,5vw,5rem)] font-black text-white tracking-tighter mb-14"
             >
               The Luxury <span className="text-primary italic">Edit</span>
             </motion.h2>
@@ -342,7 +421,7 @@ const Home = () => {
               variants={fadeInUp}
               initial="initial"
               whileInView="whileInView"
-              className="flex flex-wrap justify-center gap-3 bg-white/60 backdrop-blur-3xl p-2 rounded-full w-fit mx-auto border border-white/50 shadow-2xl shadow-black/5"
+              className="flex flex-wrap justify-center gap-3 bg-white/5 backdrop-blur-3xl p-2 rounded-full w-fit mx-auto border border-white/10 shadow-2xl"
             >
               {['featured', 'trending', 'bestSellers', 'newArrivals'].map((tab) => (
                 <button
@@ -350,8 +429,8 @@ const Home = () => {
                   onClick={() => setActiveTab(tab)}
                   className={`px-8 py-4 rounded-full font-black text-[8px] uppercase tracking-[4px] transition-all duration-500 relative group overflow-hidden ${
                     activeTab === tab 
-                      ? 'bg-[#071120] text-white shadow-2xl scale-105' 
-                      : 'text-gray-400 hover:text-[#071120]'
+                      ? 'bg-white text-[#071120] shadow-2xl scale-105' 
+                      : 'text-gray-400 hover:text-white'
                   }`}
                 >
                   <span className="relative z-10">{tab.replace(/([A-Z])/g, ' $1').trim()}</span>
@@ -405,9 +484,9 @@ const Home = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex justify-center mt-16"
+            className="flex justify-center mt-20"
           >
-            <Link to="/shop" className="group relative h-16 px-12 bg-white border-2 border-[#071120] text-[#071120] rounded-2xl font-black text-[11px] uppercase tracking-[4px] hover:bg-[#071120] hover:text-white transition-all flex items-center justify-center overflow-hidden">
+            <Link to="/shop" className="group relative h-16 px-12 bg-transparent border-2 border-white/20 text-white rounded-2xl font-black text-[11px] uppercase tracking-[4px] hover:bg-white hover:text-[#071120] hover:border-white transition-all flex items-center justify-center overflow-hidden">
               <span className="relative z-10">Load More</span>
               <FiArrowRight className="ml-4 group-hover:translate-x-2 transition-transform relative z-10 text-lg" />
             </Link>
@@ -553,7 +632,7 @@ const Home = () => {
               className="md:col-span-5 relative group rounded-2xl overflow-hidden shadow-[0_60px_120px_-30px_rgba(0,0,0,0.3)] aspect-[4/6.5]"
             >
               <img src={ArtisanKettle} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[4s]" alt="Artisan Kettle" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#071120] via-transparent to-transparent opacity-80" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#071120] via-[#071120]/40 to-transparent opacity-90" />
               <div className="absolute bottom-16 left-16 right-16">
                 <span className="text-primary font-black text-[10px] uppercase tracking-[6px] mb-4 block">The Sanctuary Series</span>
                 <h3 className="text-5xl font-black text-white tracking-tighter mb-6 italic leading-none">The Silence of Luxury</h3>
@@ -614,7 +693,7 @@ const Home = () => {
               >
                 <Link to={`/product/${product._id}`}>
                   <img src={product.images?.[0]?.url || "https://images.unsplash.com/photo-1581781870027-04212e231e96?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-[1.5s]" alt={product.name} />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#071120] via-[#071120]/40 to-transparent opacity-90 group-hover:opacity-70 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#071120] via-[#071120]/60 to-transparent opacity-100 group-hover:opacity-80 transition-opacity" />
                   <div className="absolute inset-0 p-16 flex flex-col justify-end">
                     <span className="text-primary font-black text-[8px] md:text-[10px] uppercase tracking-[4px] md:tracking-[6px] mb-2 md:mb-4">Vault Series 00{idx + 1}</span>
                     <h4 className="text-2xl md:text-4xl font-black text-white tracking-tighter mb-2 md:mb-4 italic leading-tight">{product.name}</h4>

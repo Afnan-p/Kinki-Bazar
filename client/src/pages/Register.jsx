@@ -22,6 +22,7 @@ const Register = () => {
   const dispatch = useDispatch();
 
   const { userInfo, loading, error } = useSelector((state) => state.auth);
+  const { data: settingsData } = useSelector((state) => state.settings);
 
   useEffect(() => {
     if (userInfo) {
@@ -46,6 +47,8 @@ const Register = () => {
     dispatch(register({ name, email, password }));
   };
 
+  const isRegistrationEnabled = settingsData?.platform?.registrationStatus !== false;
+
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-20">
       <motion.div 
@@ -61,7 +64,13 @@ const Register = () => {
           <p className="text-gray-500">Join the <span className="font-['Bricolage_Grotesque'] lowercase text-primary">kinki</span> <span className="font-['Bricolage_Grotesque'] uppercase text-accent">Bazar</span> community today</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        {!isRegistrationEnabled ? (
+          <div className="bg-red-50 text-red-600 p-6 rounded-2xl text-center border border-red-100">
+            <h3 className="font-black text-lg mb-2">Registration Closed</h3>
+            <p className="text-sm font-medium">New account creation is currently disabled by the administrator. Please try again later.</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
             <label className="text-sm font-bold text-gray-700 ml-1">Full Name</label>
             <div className="relative">
@@ -148,6 +157,7 @@ const Register = () => {
             )}
           </button>
         </form>
+        )}
 
         <div className="mt-10 text-center">
           <p className="text-gray-500">

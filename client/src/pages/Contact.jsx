@@ -96,35 +96,67 @@ const Contact = () => {
             </div>
           </motion.div>
 
-          {/* Map Embed */}
+          {/* Premium Contact Form */}
           <motion.div 
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="h-full min-h-[350px] md:min-h-[500px]"
+            className="bg-white p-10 md:p-14 rounded-[32px] shadow-2xl border border-gray-100 h-full flex flex-col justify-center"
           >
-            <div className="w-full h-full min-h-[350px] md:min-h-[500px] rounded-2xl overflow-hidden shadow-2xl border border-white relative group">
-              <div className="absolute inset-0 bg-[#071120]/5 group-hover:bg-transparent transition-colors duration-500 pointer-events-none z-10" />
-              {contact?.mapUrl ? (
-                <iframe 
-                  src={contact.mapUrl} 
-                  width="100%" 
-                  height="100%" 
-                  className="absolute inset-0 w-full h-full border-0 grayscale group-hover:grayscale-0 transition-all duration-1000"
-                  allowFullScreen="" 
-                  loading="lazy" 
-                  referrerPolicy="no-referrer-when-downgrade"
-                ></iframe>
-              ) : (
-                <div className="w-full h-full min-h-[500px] bg-gray-200 flex items-center justify-center text-gray-400">
-                  <FiMapPin className="text-4xl" />
-                </div>
-              )}
-            </div>
+            <h3 className="text-3xl font-black text-[#071120] tracking-tighter italic mb-10">Inquire</h3>
+            <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); alert('Message sent!'); }}>
+              
+              <div className="space-y-3">
+                <label htmlFor="name" className="text-[11px] font-black tracking-[3px] uppercase text-gray-400 block">Full Name</label>
+                <input type="text" id="name" className="w-full px-5 py-4 text-base text-[#071120] bg-gray-50 border border-transparent focus:border-[#071120] focus:bg-white rounded-xl outline-none transition-all duration-300" placeholder="Your Name" required />
+              </div>
+
+              <div className="space-y-3">
+                <label htmlFor="email" className="text-[11px] font-black tracking-[3px] uppercase text-gray-400 block">Email Address</label>
+                <input type="email" id="email" className="w-full px-5 py-4 text-base text-[#071120] bg-gray-50 border border-transparent focus:border-[#071120] focus:bg-white rounded-xl outline-none transition-all duration-300" placeholder="your@email.com" required />
+              </div>
+
+              <div className="space-y-3 pt-2">
+                <label htmlFor="message" className="text-[11px] font-black tracking-[3px] uppercase text-gray-400 block">Your Message</label>
+                <textarea id="message" rows="4" className="w-full px-5 py-4 text-base text-[#071120] bg-gray-50 border border-transparent focus:border-[#071120] focus:bg-white rounded-xl outline-none transition-all duration-300 resize-none" placeholder="How can we help you?" required></textarea>
+              </div>
+
+              <button type="submit" className="w-full h-16 mt-4 bg-[#071120] text-white font-black uppercase tracking-[4px] text-xs hover:bg-primary transition-colors duration-500 rounded-xl">
+                Send Inquiry
+              </button>
+            </form>
           </motion.div>
 
         </div>
+
+        {/* Map Embed - Full Width Below */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="mt-16 h-[400px]"
+        >
+          <div className="w-full h-full rounded-[32px] overflow-hidden shadow-2xl border border-white relative group">
+            <div className="absolute inset-0 bg-[#071120]/5 group-hover:bg-transparent transition-colors duration-500 pointer-events-none z-10" />
+            {contact?.mapUrl ? (
+              <iframe 
+                src={contact.mapUrl} 
+                width="100%" 
+                height="100%" 
+                className="absolute inset-0 w-full h-full border-0 grayscale group-hover:grayscale-0 transition-all duration-1000"
+                allowFullScreen="" 
+                loading="lazy" 
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
+            ) : (
+              <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">
+                <FiMapPin className="text-4xl" />
+              </div>
+            )}
+          </div>
+        </motion.div>
       </div>
     </div>
   );

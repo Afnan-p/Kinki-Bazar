@@ -108,8 +108,9 @@ const Navbar = () => {
             : 'py-4 md:py-6'
         }`}
         style={{
-          background: shouldBeTransparent ? 'transparent' : 'white',
+          background: shouldBeTransparent ? 'transparent' : 'rgba(255, 255, 255, 0.8)',
           backdropFilter: shouldBeTransparent ? 'none' : 'blur(20px)',
+          WebkitBackdropFilter: shouldBeTransparent ? 'none' : 'blur(20px)',
           borderBottom: shouldBeTransparent ? 'none' : '1px solid rgba(0,0,0,0.05)'
         }}
       >
