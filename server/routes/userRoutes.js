@@ -9,6 +9,8 @@ const {
   getWishlist,
   addToWishlist,
   removeFromWishlist,
+  generate2FA,
+  enable2FA,
 } = require('../controllers/userController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
@@ -27,5 +29,8 @@ router
   .post(protect, addToWishlist);
 
 router.delete('/wishlist/:id', protect, removeFromWishlist);
+
+router.post('/2fa/generate', protect, generate2FA);
+router.post('/2fa/enable', protect, enable2FA);
 
 module.exports = router;

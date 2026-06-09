@@ -49,6 +49,10 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/coupons', couponRoutes);
 app.use('/api/subscribers', subscriberRoutes);
 
+app.get('/api/config/razorpay', (req, res) =>
+  res.send(process.env.RAZORPAY_KEY_ID)
+);
+
 app.use(notFound);
 app.use(errorHandler);
 

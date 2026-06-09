@@ -1,16 +1,39 @@
 const asyncHandler = require('../utils/asyncHandler');
 const generateToken = require('../utils/generateToken');
 const User = require('../models/User');
+const SiteSettings = require('../models/SiteSettings');
+const { authenticator } = require('otplib');
+const qrcode = require('qrcode');
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, code } = req.body;
 
   const user = await User.findOne({ email }).select('+password');
 
   if (user && (await user.matchPassword(password))) {
+    
+    // Check global 2FA setting
+    const settings = await SiteSettings.findOne({});
+    const global2FA = settings?.platform?.twoFactorAuth || false;
+
+    // If 2FA is globally enabled and user has it set up
+    if (global2FA && user.twoFactorEnabled) {
+      if (!code) {
+        // Step 1: Password matched, but needs 2FA code
+        return res.json({ requires2FA: true, message: 'Please enter your 2FA code' });
+      }
+
+      // Step 2: Verify the provided code
+      const isValid = authenticator.verify({ token: code, secret: user.twoFactorSecret });
+      if (!isValid) {
+        res.status(401);
+        throw new Error('Invalid 2FA code');
+      }
+    }
+
     res.json({
       _id: user._id,
       name: user.name,
@@ -32,6 +55,12 @@ const authUser = asyncHandler(async (req, res) => {
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
+
+  const settings = await SiteSettings.findOne({});
+  if (settings && settings.platform && settings.platform.registrationStatus === false) {
+    res.status(403);
+    throw new Error('Registration is currently disabled by the administrator');
+  }
 
   const userExists = await User.findOne({ email });
 
@@ -207,6 +236,55 @@ const getWishlist = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Generate 2FA Secret and QR Code
+// @route   POST /api/users/2fa/generate
+// @access  Private
+const generate2FA = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  const secret = authenticator.generateSecret();
+  const otpauth = authenticator.keyuri(user.email, 'Kinki Bazar', secret);
+
+  const qrCodeUrl = await qrcode.toDataURL(otpauth);
+
+  user.twoFactorSecret = secret;
+  await user.save();
+
+  res.json({
+    secret,
+    qrCodeUrl
+  });
+});
+
+// @desc    Enable 2FA by verifying the first code
+// @route   POST /api/users/2fa/enable
+// @access  Private
+const enable2FA = asyncHandler(async (req, res) => {
+  const { code } = req.body;
+  const user = await User.findById(req.user._id);
+
+  if (!user || !user.twoFactorSecret) {
+    res.status(400);
+    throw new Error('2FA secret not found. Please generate it first.');
+  }
+
+  const isValid = authenticator.verify({ token: code, secret: user.twoFactorSecret });
+
+  if (isValid) {
+    user.twoFactorEnabled = true;
+    await user.save();
+    res.json({ message: 'Two-Factor Authentication enabled successfully' });
+  } else {
+    res.status(400);
+    throw new Error('Invalid authentication code');
+  }
+});
+
 module.exports = {
   authUser,
   registerUser,
@@ -216,4 +294,6 @@ module.exports = {
   addToWishlist,
   removeFromWishlist,
   getWishlist,
+  generate2FA,
+  enable2FA,
 };

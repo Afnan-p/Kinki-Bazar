@@ -49,6 +49,11 @@ const updateSiteSettings = asyncHandler(async (req, res) => {
     settings.contact = { ...settings.contact, ...req.body.contact };
   }
 
+  // Update platform settings
+  if (req.body.platform) {
+    settings.platform = { ...settings.platform, ...req.body.platform };
+  }
+
   const updatedSettings = await settings.save();
   res.json(updatedSettings);
 });

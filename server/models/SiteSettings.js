@@ -57,6 +57,12 @@ const siteSettingsSchema = new mongoose.Schema(
       email: { type: String, default: "concierge@kinkibazar.com" },
       phone: { type: String, default: "+1 (800) 555-0199" },
       address: { type: String, default: "123 Luxury Ave, Beverly Hills, CA 90210" }
+    },
+    platform: {
+      storeName: { type: String, default: "Kinki Bazar" },
+      supportEmail: { type: String, default: "support@kinkibazar.com" },
+      twoFactorAuth: { type: Boolean, default: false },
+      registrationStatus: { type: Boolean, default: true }
     }
   },
   {

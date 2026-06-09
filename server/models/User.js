@@ -55,7 +55,15 @@ const userSchema = new mongoose.Schema(
         country: { type: String, required: true },
         isDefault: { type: Boolean, default: false }
       }
-    ]
+    ],
+    twoFactorSecret: {
+      type: String,
+      default: null,
+    },
+    twoFactorEnabled: {
+      type: Boolean,
+      default: false,
+    }
   },
   {
     timestamps: true,
